@@ -103,7 +103,6 @@ export default function ProductDetailPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen text-gray-900 antialiased font-sans">
-
       {/* Dynamic Meta Head Tags */}
       <Helmet>
         <title>
@@ -388,7 +387,10 @@ export default function ProductDetailPage() {
           <div className="p-6 md:p-8 min-h-[250px]">
             {/* {activeTab === "description" && <div>{product.content}</div>} */}
             {activeTab === "description" && (
-              <div dangerouslySetInnerHTML={{ __html: product.content }} />
+              <div
+                className="space-y-4 text-gray-700 text-sm leading-relaxed [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1"
+                dangerouslySetInnerHTML={{ __html: product.content }}
+              />
             )}
 
             {activeTab === "technical" && (
