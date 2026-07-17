@@ -337,8 +337,146 @@
       "category_image": "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/03/037832dfe2116ab2582807ada68b498642e826c3.png"
     },
     {
-      "categories": ["Welding"],
-      "category_image": "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/e0/e0404166b4d6dff84aaa9e1a931a5753685d13b5.png"
+      "sku": "TX504",
+      "product_name": "TX504 Extreme Turbotorch Gas Trigger Torch ",
+      "brand": "AEF",
+      "mpn": "TX504",
+      "categories": ["Welding", "Welding Consumables", "Welding Torches"],
+      "category_image": "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/e0/e0404166b4d6dff84aaa9e1a931a5753685d13b5.png",
+      "taxonomy": "Powertools & Machines > Cordless Power Tools > Table Saw and Cross Cuts",
+      "content": "<p>TurboTorch has developed a new series of hand torches that also feature Extreme Swirl Technology. The new Extreme series generates more heat than other hand torches for faster brazing times and less gas consumption. All Extreme series hand torches and tips feature TurboTorch swirl combustion. Higher heat levels, in a short amount of time, enable the pros to quickly complete the job.</p><h3 style=\"font-size: 22.4px; color: rgb(31, 12, 87); font-weight: 400;\">Features:</h3><ul><li>Powerful turbo flame delivers concentrated heat for fast heating and soldering applications.</li><li>Instant trigger ignition enables quick, safe, and convenient one-handed operation.</li><li>Ergonomic handle provides a comfortable, secure grip during prolonged use.</li><li>Durable construction ensures reliable performance in demanding professional environments.</li><li>Ideal for plumbing, brazing, soldering, and general heating applications with compatible gas cylinders.</li></ul>",
+      "tech_spec": "<ul><li><span style=\"display: inline-block; width: 320px;\">Adjustable:</span><span>No</span></li><li><span style=\"display: inline-block; width: 320px;\">Application:</span><span>HVAC, High Capacity Applications</span></li><li><span style=\"display: inline-block; width: 320px;\">Collection:</span><span>Extreme™</span></li><li><span style=\"display: inline-block; width: 320px;\">Energy Star Compliant:</span><span>No</span></li><li><span style=\"display: inline-block; width: 320px;\">Number of Tools Included:</span><span>1</span></li><li><span style=\"display: inline-block; width: 320px;\">Product Type:</span><span>Self Lighting Torch</span></li><li><span style=\"display: inline-block; width: 320px;\">Torch Type:</span><span>Propane</span></li><li><span style=\"display: inline-block; width: 320px;\">UL Listed:</span><span>No</span></li><li><span style=\"display: inline-block; width: 320px;\">UPC:</span><span>716352500418</span></li><li><span style=\"display: inline-block; width: 320px;\">Weight:</span><span>1.74 lb</span></li></ul>",
+      "page_title": "TX504 |  Extreme | Turbotorch | Gas Trigger Torch | Mapp Gas Torch",
+      "meta_keywords": "TX504, Extreme, Turbotorch, Gas, Trigger, Torch, Mapp, Gas, Torch",
+      "meta_description": "AEF Ltd. stockists of Turbotorches in Ireland. Explore our wide range of Engineering, workshop and welding accessories in stock. Order now.",
+      "status": "visible",
+      "price": "190.33",
+      "currency": "EUR",
+      "images": [
+        "https://www.borit.com/cdn/shop/products/0386-1293_TX-504_left_hi_5000x.jpg?v=1658447839",
+        "https://www.borit.com/cdn/shop/products/0386-1293_TX-504_pkg_front_hi-1_5000x.jpg?v=1658448036"
+      ],
+      "documents": [
+        {
+          "name": "Data Sheet-AWA06060 (Sample)",
+          "path": "https://www.dfsfixings.com/file.php?filename=AWA06060%2FThroughbolts_ETA_AWA_RE02.pdf"
+        }
+      ]
+    },
+    {
+      "sku": "3037",
+      "product_name": "Black Auto-Darkening Welding Helmet ",
+      "brand": "SWP",
+      "mpn": "3037",
+      "categories": [
+        "Welding",
+        "Welding Safety",
+        "Welding Googles and Safety Glasses"
+      ],
+      "category_image": "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/e0/e0404166b4d6dff84aaa9e1a931a5753685d13b5.png",
+      "taxonomy": "Powertools & Machines > Cordless Power Tools > Table Saw and Cross Cuts",
+      "content": "<p>SWP Variable Shade Auto-Darkening Welding Helmet – Black is a reliable and easy-to-use welding helmet designed for everyday fabrication, featuring variable shade control and TIG capability for versatile workshop applications.<br><br>Designed for general welding and fabrication work, this SWP auto-darkening helmet provides dependable protection across MIG, TIG and MMA welding applications. The variable shade range allows users to adapt the helmet to different welding conditions, while the fast switching speed helps maintain visibility and safety.<br><br>With TIG welding capability from as low as 5 amps, the helmet is suitable for light fabrication and precision work. Adjustable sensitivity and delay controls allow users to fine-tune performance, while the integrated grinding function enables quick switching between welding and preparation tasks.<br><br>The lightweight design and comfortable headgear ensure ease of use throughout the working day, making it a practical solution for workshop and site environments.</p><h3 style=\"font-size: 22.4px; color: rgb(31, 12, 87); font-weight: 400;\">Features:</h3><ul><li>Variable shade 4-9 / 9-13 auto-darkening filter</li><li>TIG welding capability from 5 amps</li><li>Grinding function for multi-process use</li><li>Stepless adjustable sensitivity and delay</li><li>Lightweight, comfortable design for extended use</li></ul>",
+      "tech_spec": "<ul><li><span style=\"display: inline-block; width: 320px;\">Product Type:</span><span>Auto-Darkening Welding Helmet</span></li><li><span style=\"display: inline-block; width: 320px;\">Viewing Area:</span><span>90 x 40 mm</span></li><li><span style=\"display: inline-block; width: 320px;\">Filter Dimensions:</span><span>110 x 90 mm</span></li><li><span style=\"display: inline-block; width: 320px;\">Optical Classification:</span><span>1/1/1/2</span></li><li><span style=\"display: inline-block; width: 320px;\">Light Shade:</span><span>4</span></li><li><span style=\"display: inline-block; width: 320px;\">Dark Shade Range:</span><span>4&ndash;9 / 9&ndash;13</span></li><li><span style=\"display: inline-block; width: 320px;\">Switching Time:</span><span>0.08 ms</span></li><li><span style=\"display: inline-block; width: 320px;\">Delay Time:</span><span>0.1&ndash;0.9 s</span></li><li><span style=\"display: inline-block; width: 320px;\">Sensors:</span><span>2</span></li><li><span style=\"display: inline-block; width: 320px;\">Sensitivity Control:</span><span>Stepless Adjustable</span></li><li><span style=\"display: inline-block; width: 320px;\">Grinding Function:</span><span>Yes</span></li><li><span style=\"display: inline-block; width: 320px;\">Minimum TIG Current:</span><span>5A</span></li><li><span style=\"display: inline-block; width: 320px;\">UV/IR Protection:</span><span>DIN 15</span></li></ul>",
+      "page_title": "Premium Black Auto-Darkening Welding Helmet for Ultimate Protection",
+      "meta_keywords": "welding helmet, auto-darkening, black, protective gear, welding accessories, safety equipment, welder's mask, SKU 3037, welding supplies, professional welding helmet",
+      "meta_description": "AEF Ltd stockist of Engineering Supplies and Consumables in Ireland. See our wide range of Tools in stock. Order today.",
+      "status": "visible",
+      "price": "54.99",
+      "currency": "EUR",
+      "images": [
+        "https://specialisedwelding.co.uk/cdn/shop/files/HG-2001.png?v=1746697900&width=1946",
+        "https://specialisedwelding.co.uk/cdn/shop/files/3037_SWP.png?v=1746697900"
+      ],
+      "documents": [
+        {
+          "name": "Data Sheet-AWA06060 (Sample)",
+          "path": "https://www.dfsfixings.com/file.php?filename=AWA06060%2FThroughbolts_ETA_AWA_RE02.pdf"
+        }
+      ]
+    },
+    {
+      "sku": "3026",
+      "product_name": "SWP Outer Lens 118 X 97mm (5pk) STEALTH XG-ADPRO",
+      "brand": "SWP",
+      "mpn": "3026",
+      "categories": [
+        "Welding",
+        "Welding Safety",
+        "Welding Googles and Safety Glasses"
+      ],
+      "category_image": "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/e0/e0404166b4d6dff84aaa9e1a931a5753685d13b5.png",
+      "taxonomy": "Powertools & Machines > Cordless Power Tools > Table Saw and Cross Cuts",
+      "content": "<p>The SWP Outer Lens 118 x 97 mm (5 Pack) STEALTH XG-ADPRO (3026) is a high-quality replacement protective lens designed for STEALTH XG-ADPRO welding helmets. Manufactured from durable, optically clear material, it shields the auto-darkening filter from sparks, spatter, scratches, and debris, helping to maintain clear vision and extend helmet service life. Measuring 118 x 97 mm, these outer lenses provide a precise fit for compatible helmets and are quick to replace when worn or damaged. Supplied in a convenient pack of five, they are ideal for professional welding, fabrication, and industrial maintenance environments.</p><h3 style=\"font-size: 22.4px; color: rgb(31, 12, 87); font-weight: 400;\">Features:</h3><ul><li>Designed specifically for STEALTH XG-ADPRO welding helmets for a precise and secure fit</li><li>Protects the auto-darkening filter from sparks, weld spatter, scratches, and debris</li><li>Optically clear construction maintains excellent visibility during welding operations</li><li>118 x 97 mm replacement lens installs quickly for minimal downtime</li><li>Supplied in a convenient pack of five for long-lasting workshop and jobsite use</li></ul>",
+      "tech_spec": "<ul><li><span style=\"display: inline-block; width: 320px;\">Condition:</span><span>New</span></li><li><span style=\"display: inline-block; width: 320px;\">Size:</span><span>118 x 97mm</span></li></ul>",
+      "page_title": "SWP Outer Lens 118 X 97mm (5pk) STEALTH XG-ADPRO",
+      "meta_keywords": "SWP Outer Lens 118 X 97mm (5pk) STEALTH XG-ADPRO",
+      "meta_description": "AEF Ltd stockist of Engineering Supplies, Accessories and Consumables  in  Ireland. See our wide range of stock inhouse or online. Order today.",
+      "status": "visible",
+      "price": "23.15",
+      "currency": "EUR",
+      "images": ["https://www.waspsupplies.com/images/400x400/SCL3026.png"],
+      "documents": [
+        {
+          "name": "Data Sheet-AWA06060 (Sample)",
+          "path": "https://www.dfsfixings.com/file.php?filename=AWA06060%2FThroughbolts_ETA_AWA_RE02.pdf"
+        }
+      ]
+    },
+    {
+      "sku": "23-3615",
+      "product_name": "Weldass Blk Bandana Flame Retardant Cotton",
+      "brand": "Weldass",
+      "mpn": "23-3615",
+      "categories": ["Welding", "Welding Safety", "Welding Helmets and Masks"],
+      "category_image": "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/e0/e0404166b4d6dff84aaa9e1a931a5753685d13b5.png",
+      "taxonomy": "Powertools & Machines > Cordless Power Tools > Table Saw and Cross Cuts",
+      "content": "<p>The Weldas Black Bandana Flame Retardant Cotton (23-3615) is designed to provide reliable head protection and comfort for welders and industrial professionals working in high-heat environments. Manufactured from flame-retardant cotton, it helps reduce exposure to sparks, spatter, and radiant heat while remaining lightweight and breathable for extended wear. The adjustable tie-back design ensures a secure, comfortable fit for most head sizes and fits easily beneath welding helmets and safety headgear. Ideal for welding, fabrication, metalworking, and maintenance tasks, this durable bandana offers dependable protection, comfort, and long-lasting performance in demanding workplace conditions.</p><h3 style=\"font-size: 22.4px; color: rgb(31, 12, 87); font-weight: 400;\">Features:</h3><ul><li>One size fits all</li><li>Often used in combination with helmet</li><li>High comfort and flexibility</li><li>Sweatband integrated in the front of the Doo-Rag</li><li>305 gr./m² flame retardant cotton</li></ul>",
+      "tech_spec": "<ul><li><span style=\"display: inline-block; width: 320px;\">Manufacturer:</span><span>Weldas</span></li><li><span style=\"display: inline-block; width: 320px;\">Weight:</span><span>0.04 kg</span></li><li><span style=\"display: inline-block; width: 320px;\">EAN Code:</span><span>8718564524628</span></li><li><span style=\"display: inline-block; width: 320px;\">Origin:</span><span>Cambodia</span></li></ul>",
+      "page_title": "Weldass Blk Bandana Flame Retardant Cotton",
+      "meta_keywords": "Weldass Blk Bandana Flame Retardant Cotton",
+      "meta_description": "AEF Ltd stockist of Engineering Supplies, Accessories and Consumables  in  Ireland. See our wide range of stock inhouse or online. Order today.",
+      "status": "visible",
+      "price": "24.07",
+      "currency": "EUR",
+      "images": [
+        "https://www.weldaseurope.com/wp-content/uploads/2024/02/23-3615-JPG-1500x1536.jpg"
+      ],
+      "documents": [
+        {
+          "name": "Data Sheet-AWA06060 (Sample)",
+          "path": "https://www.dfsfixings.com/file.php?filename=AWA06060%2FThroughbolts_ETA_AWA_RE02.pdf"
+        }
+      ]
+    },
+    {
+      "sku": "623520000",
+      "product_name": "Weldass Blk Bandana Flame Retardant Cotton",
+      "brand": "Metabo",
+      "mpn": "23-3615",
+      "categories": [
+        "Welding",
+        "Welding Cleaning",
+        "Welding Anti Spatter Spray"
+      ],
+      "category_image": "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/e0/e0404166b4d6dff84aaa9e1a931a5753685d13b5.png",
+      "taxonomy": "Powertools & Machines > Cordless Power Tools > Table Saw and Cross Cuts",
+      "content": "<p>The Metabo Polishing Paste White 250 g (623520000) is a premium polishing compound formulated to produce a smooth, high-gloss finish on metal and other compatible surfaces. Designed for use with polishing wheels and buffing accessories, it effectively removes fine scratches, oxidation, and surface imperfections while enhancing the material’s natural shine. Its consistent formulation ensures even application and reliable polishing performance, making it suitable for workshop, fabrication, and maintenance tasks. Supplied in a convenient 250 g bar, this polishing paste is ideal for professional tradespeople and DIY users seeking high-quality finishing results with minimal effort.</p><h3 style=\"font-size: 22.4px; color: rgb(31, 12, 87); font-weight: 400;\">Features:</h3><ul><li>Produces a smooth, high-gloss finish on metal and other compatible surfaces</li><li>Effectively removes fine scratches, oxidation, and minor surface imperfections</li><li>Designed for use with polishing wheels and buffing accessories</li><li>Consistent polishing compound ensures even application and reliable results</li><li>Supplied in a convenient 250 g bar for professional and DIY polishing applications</li></ul>",
+      "tech_spec": "<ul><li><span style=\"display: inline-block; width: 320px;\">Brand:</span><span>Metabo</span></li><li><span style=\"display: inline-block; width: 320px;\">EAN:</span><span>4007430148506</span></li><li><span style=\"display: inline-block; width: 320px;\">Minimum Order Quantity:</span><span>1</span></li><li><span style=\"display: inline-block; width: 320px;\">Gross Weight:</span><span>0.254 kg</span></li><li><span style=\"display: inline-block; width: 320px;\">Form:</span><span>Solid Bar</span></li><li><span style=\"display: inline-block; width: 320px;\">Paste Color:</span><span>White</span></li><li><span style=\"display: inline-block; width: 320px;\">Application:</span><span>Fine polishing and finishing</span></li><li><span style=\"display: inline-block; width: 320px;\">Suitable For:</span><span>Metal and compatible surfaces</span></li><li><span style=\"display: inline-block; width: 320px;\">Compatible With:</span><span>Polishing wheels and buffing machines</span></li></ul>",
+      "page_title": "Metabo 623520000 | Polishing Paste White",
+      "meta_keywords": "Polishing Paste White 250G, Metabo, welding tools, welding cleaning, welding, pre-polishing, polishing stainless steel",
+      "meta_description": "AEF Ltd stockist of Metabo 623520000, Polishing Paste White in Ireland. See our wide range of Welding Tools in stock. Order today.",
+      "status": "visible",
+      "price": "11.21",
+      "currency": "EUR",
+      "images": [
+        "https://media.witglobal.net/source/eshop/stmedia/0401/images/std.lang.all/resolutions/category/576px/639694239.jpg"
+      ],
+      "documents": [
+        {
+          "name": "Data Sheet-623520000",
+          "path": "https://media.witglobal.net/stmedia/hahnkolb/documents/LANG_en/HK-95090223.pdf"
+        }
+      ]
     },
     {
       "categories": ["Workshop Maintenance & Safety"],

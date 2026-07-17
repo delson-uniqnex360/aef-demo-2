@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { buildCategoryTree } from "../api/category";
+import { buildCategoryTreeV2 } from "../api/category";
 import { getProductsByFlexLevel } from "../api/product";
 import AppTaxonomy from "../components/AppTaxonomy";
 
@@ -32,7 +32,7 @@ export default function ProductPage() {
         const products = Array.isArray(rawData) ? rawData : rawData.data;
         setAllDbProducts(products ?? []);
 
-        const tree = buildCategoryTree(products ?? []);
+        const tree = buildCategoryTreeV2(products ?? []);
         const result = getProductsByFlexLevel(
           tree,
           formatSlug,
@@ -50,6 +50,8 @@ export default function ProductPage() {
         setLoading(false);
       });
   }, [categorySlug]);
+
+  console.log('product to display', productsToDisplay)
 
   if (loading) {
     return (
