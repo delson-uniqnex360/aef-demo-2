@@ -12,20 +12,18 @@ import {
 } from "react-icons/fa6";
 import { MdOutlineEmail, MdShare } from "react-icons/md";
 
+// Icon definition with exact background colors matching reference UI
 const shareIcons = [
-  { icon: FaXTwitter, name: "X", color: "text-black" },
-  { icon: MdOutlineEmail, name: "Email", color: "text-red-500" },
-  { icon: FaWhatsapp, name: "WhatsApp", color: "text-green-500" },
-  { icon: MdShare, name: "Share", color: "text-blue-500" },
-  { icon: FaRegCopy, name: "Copy Link", color: "text-gray-600" },
-  { icon: FaFacebookF, name: "Facebook", color: "text-blue-600" },
+  { icon: FaXTwitter, name: "X", bg: "bg-black text-white" },
+  { icon: MdOutlineEmail, name: "Email", bg: "bg-gray-500 text-white" },
+  { icon: FaWhatsapp, name: "WhatsApp", bg: "bg-[#25D366] text-white" },
+  { icon: MdShare, name: "Share", bg: "bg-[#8ed743] text-white" },
+  { icon: FaRegCopy, name: "Copy Link", bg: "bg-[#0f6b32] text-white" },
+  { icon: FaFacebookF, name: "Facebook", bg: "bg-[#4267B2] text-white" },
 ];
 
 export default function ProductDetailPage() {
   const { sku } = useParams<{ sku: string }>();
-  const [activeTab, setActiveTab] = useState<
-    "description" | "technical" | "reviews" | "documents"
-  >("description");
 
   // Asynchronous product states
   const [product, setProduct] = useState<any>(null);
@@ -43,8 +41,6 @@ export default function ProductDetailPage() {
 
     loadProduct();
   }, [sku]);
-
-  console.log(" product detail", product);
 
   // Sync selectedMedia once product data is loaded or changes
   useEffect(() => {
@@ -102,7 +98,7 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen text-gray-900 antialiased font-sans">
+    <div className="bg-white min-h-screen text-gray-900 antialiased font-sans">
       {/* Dynamic Meta Head Tags */}
       <Helmet>
         <title>
@@ -117,7 +113,7 @@ export default function ProductDetailPage() {
           }
         />
 
-        {/* Open Graph / Social Media Tags (Optional Best Practice) */}
+        {/* Open Graph / Social Media Tags */}
         <meta
           property="og:title"
           content={product?.meta_title || product?.product_name}
@@ -128,47 +124,17 @@ export default function ProductDetailPage() {
         )}
       </Helmet>
 
-      <main className="max-w-[1200px] mx-auto px-4 py-8 md:py-12">
+      <main className="max-w-[1200px] mx-auto px-4 py-8">
         <AppTaxonomy products={[product]} />
-        {/* 2. Top Section: Core Details Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-16">
-          {/* Left Column: Modern Media Gallery */}
-          <div className="lg:col-span-7 space-y-4">
-            {/* Main Stage View with Overlay Navigation Arrows */}
-            <div className="relative group/main bg-white border border-gray-50 rounded-2xl overflow-hidden aspect-video flex items-center justify-center p-0 shadow-sm">
-              {/* Left Arrow Button (Circular Loop) */}
-              <button
-                onClick={() => {
-                  const currentIndex = product.images.indexOf(selectedMedia);
-                  // If at the beginning, wrap around to the end of the array
-                  const prevIndex =
-                    currentIndex <= 0
-                      ? product.images.length - 1
-                      : currentIndex - 1;
-                  setSelectedMedia(product.images[prevIndex]);
-                }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white/80 backdrop-blur-md border border-gray-50/50 rounded-full shadow-md text-gray-700 opacity-0 group-hover/main:opacity-100 transition-all duration-200 hover:bg-white hover:scale-105 active:scale-95"
-                aria-label="Previous media"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
 
-              {/* Media Viewer */}
+        {/* Top Section: Media Gallery and Product Details */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+          {/* Left Column: Gallery */}
+          <div className="lg:col-span-6 space-y-4">
+            <div className="relative border border-gray-200 rounded-sm overflow-hidden aspect-[4/3] flex items-center justify-center bg-white p-2">
               {isYouTubeUrl(selectedMedia) ? (
                 <iframe
-                  className="w-full h-full rounded-xl"
+                  className="w-full h-full"
                   src={`https://www.youtube.com/embed/${getYouTubeEmbedId(selectedMedia)}`}
                   title="Product Video"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -181,115 +147,100 @@ export default function ProductDetailPage() {
                   className="w-full h-full object-contain"
                 />
               )}
+            </div>
 
-              {/* Right Arrow Button (Circular Loop) */}
+            {/* Scrollable Thumbnails row with side navigation arrows */}
+            <div className="relative flex items-center gap-2">
               <button
                 onClick={() => {
                   const currentIndex = product.images.indexOf(selectedMedia);
-                  // If at the end, wrap around to the first item
+                  const prevIndex =
+                    currentIndex <= 0
+                      ? product.images.length - 1
+                      : currentIndex - 1;
+                  setSelectedMedia(product.images[prevIndex]);
+                }}
+                className="text-gray-600 hover:text-black p-1 text-xl font-bold"
+                aria-label="Previous image"
+              >
+                ‹
+              </button>
+
+              <div className="flex gap-4 overflow-x-auto py-1 scrollbar-none flex-1">
+                {product.images?.map((media: string, index: number) => {
+                  const isVideo = isYouTubeUrl(media);
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedMedia(media)}
+                      className={`w-28 h-24 flex-shrink-0 border rounded-sm overflow-hidden bg-white p-2 flex items-center justify-center transition-all ${
+                        selectedMedia === media
+                          ? "border-orange-500 ring-1 ring-orange-500"
+                          : "border-gray-200 hover:border-gray-400"
+                      }`}
+                    >
+                      {isVideo ? (
+                        <div className="relative w-full h-full bg-gray-900 flex items-center justify-center">
+                          <span className="text-[10px] font-bold text-white tracking-wide">
+                            VIDEO
+                          </span>
+                        </div>
+                      ) : (
+                        <img
+                          src={media}
+                          alt={`Thumbnail ${index}`}
+                          className="w-full h-full object-contain"
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => {
+                  const currentIndex = product.images.indexOf(selectedMedia);
                   const nextIndex =
                     currentIndex === product.images.length - 1
                       ? 0
                       : currentIndex + 1;
                   setSelectedMedia(product.images[nextIndex]);
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white/80 backdrop-blur-md border border-gray-50/50 rounded-full shadow-md text-gray-700 opacity-0 group-hover/main:opacity-100 transition-all duration-200 hover:bg-white hover:scale-105 active:scale-95"
-                aria-label="Next media"
+                className="text-gray-600 hover:text-black p-1 text-xl font-bold"
+                aria-label="Next image"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                ›
               </button>
-            </div>
-
-            {/* Scrollable Thumbnails row (Clean & Independent) */}
-            <div className="flex gap-3 overflow-x-auto pb-2 snap-x scrollbar-thin scrollbar-thumb-gray-300 w-full py-0.5">
-              {product.images?.map((media: string, index: number) => {
-                const isVideo = isYouTubeUrl(media);
-                return (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedMedia(media)}
-                    className={`w-24 h-20 flex-shrink-0 border rounded-xl overflow-hidden bg-white snap-start relative flex items-center justify-center p-0 transition-all ${
-                      selectedMedia === media
-                        ? "border-orange-600 ring-2 ring-orange-100"
-                        : "border-gray-50 hover:border-gray-200"
-                    }`}
-                  >
-                    {isVideo ? (
-                      <div className="relative w-full h-full bg-gray-900 flex items-center justify-center rounded-lg">
-                        <span className="text-xs font-bold text-white tracking-wide">
-                          VIDEO
-                        </span>
-                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                          <div className="w-6 h-6 bg-orange-600 rounded-full flex items-center justify-center text-white pl-0.5 shadow-md">
-                            ▶
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <img
-                        src={media}
-                        alt={`Thumbnail ${index}`}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </button>
-                );
-              })}
             </div>
           </div>
 
-          {/* Right Column: Checkout Purchase Card & Meta */}
-          <div className="lg:col-span-5 bg-white border border-gray-50 rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
+          {/* Right Column: Information & Actions */}
+          <div className="lg:col-span-6 space-y-4">
             <div>
-              <div className="flex items-center justify-between gap-4 mb-2">
-                <span className="text-sm font-semibold text-orange-600 tracking-wider uppercase">
-                  {product.brand}
-                </span>
-              </div>
-              <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight leading-tight text-balance">
+              <h1 className="text-3xl font-normal text-[#1e1450] tracking-tight leading-tight mb-1">
                 {product.product_name}
               </h1>
-              <p className="text-xs text-gray-400 mt-1">Code: {product.mpn}</p>
+              <p className="text-sm text-gray-500 flex items-center gap-1">
+                <span className="text-gray-400">└</span> {product.mpn}
+              </p>
             </div>
 
             {/* Price block */}
-            {/* Extract integer and cents dynamically */}
             {(() => {
               const priceNum = Number(product.price) || 0;
               const integerPart = Math.floor(priceNum);
-              // Get the 2-digit cents (e.g., "99")
               const centsPart = (priceNum % 1).toFixed(2).split(".")[1];
 
               return (
-                <div className="border-y border-gray-50 py-4 flex items-start gap-1">
-                  {/* Main Price (Integer) */}
-                  <span className="text-3xl font-black tracking-tight text-gray-900 leading-none">
+                <div className="flex items-baseline gap-0.5 text-[#1e1450]">
+                  <span className="text-3xl font-extrabold tracking-tight">
                     {product.currency === "EUR" ? "€" : product.currency || "$"}
                     {integerPart}
                   </span>
-
-                  {/* Column for Superscript Cents and VAT */}
-                  <div className="flex flex-col items-start leading-none pt-0.5">
-                    {/* Superscript Cents */}
-                    <span className="text-sm font-bold tracking-tight text-gray-900">
-                      .{centsPart}
-                    </span>
-
-                    {/* VAT Below Cents */}
-                    <span className="text-[10px] text-gray-400 font-medium whitespace-nowrap mt-0.5">
-                      incl. VAT
+                  <div className="flex flex-col text-left leading-none ml-0.5">
+                    <span className="text-sm font-bold">.{centsPart}</span>
+                    <span className="text-[10px] text-gray-500 font-normal">
+                      incl VAT
                     </span>
                   </div>
                 </div>
@@ -297,166 +248,157 @@ export default function ProductDetailPage() {
             })()}
 
             {/* Availability */}
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-sm font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+            <div>
+              <span className="text-xs font-semibold text-emerald-600 border border-emerald-500 px-2 py-0.5 rounded-sm bg-white inline-block">
                 In Stock
               </span>
             </div>
 
-            {/* Interactive Quantity & Add Action */}
-            <div className="flex gap-3">
-              <div className="w-24 border border-gray-300 rounded-xl flex items-center justify-between px-3 bg-gray-50 focus-within:border-orange-500 transition-colors">
-                <input
-                  type="number"
-                  defaultValue={1}
-                  min={1}
-                  className="w-full bg-transparent font-semibold text-center outline-none py-3 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
-              <button className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-orange-600/10 active:scale-[0.99] transition transform-all uppercase tracking-wider text-sm">
-                Add To Cart
+            {/* Quantity Input & Add to Cart */}
+            <div className="flex gap-2 max-w-sm pt-2">
+              <input
+                type="number"
+                defaultValue={1}
+                min={1}
+                className="w-16 border border-gray-300 rounded-sm text-center font-normal text-base py-2 focus:outline-none focus:border-orange-500"
+              />
+              <button className="flex-1 bg-[#ff5500] hover:bg-orange-600 text-white font-bold py-2.5 px-6 rounded-sm transition text-sm uppercase tracking-wide">
+                ADD TO CART
               </button>
             </div>
 
-            {/* Modern Native Social Share Layer */}
-            <div className="flex items-center gap-2 pt-2 text-gray-500 border-t border-gray-100">
-              <span className="text-xs font-semibold mr-2">Share item:</span>
-              {shareIcons.map(({ icon: Icon, name, color }) => (
+            {/* Social Share Icon Bar */}
+            <div className="flex items-center gap-1.5 pt-4">
+              {shareIcons.map(({ icon: Icon, name, bg }) => (
                 <button
                   key={name}
                   title={name}
-                  className="w-8 h-8 rounded-lg bg-gray-50 hover:bg-orange-50 border border-gray-50 flex items-center justify-center transition-colors"
+                  className={`w-8 h-8 rounded-sm ${bg} flex items-center justify-center transition-opacity hover:opacity-90`}
                 >
-                  <Icon className={`text-base ${color}`} />
+                  <Icon className="text-sm" />
                 </button>
               ))}
             </div>
           </div>
         </div>
 
-        {/* 3. Bottom Section: Tabbed Content Panels */}
-        <div className="bg-white border border-gray-50 rounded-2xl shadow-sm overflow-hidden">
-          {/* Tab Selection Header */}
-          <div className="flex border-b border-gray-50 bg-gray-50/70 px-4 pt-2 gap-2">
-            <button
-              onClick={() => setActiveTab("description")}
-              className={`px-6 py-3.5 text-sm font-bold tracking-wide rounded-t-xl transition-all border-t-2 -mb-px ${
-                activeTab === "description"
-                  ? "bg-white border-orange-600 text-orange-600 shadow-sm"
-                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-              }`}
-            >
-              Product Information
-            </button>
-            <button
-              onClick={() => setActiveTab("technical")}
-              className={`px-6 py-3.5 text-sm font-bold tracking-wide rounded-t-xl transition-all border-t-2 -mb-px ${
-                activeTab === "technical"
-                  ? "bg-white border-orange-600 text-orange-600 shadow-sm"
-                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-              }`}
-            >
-              Technical Information
-            </button>
-
-            <button
-              onClick={() => setActiveTab("documents")}
-              className={`px-6 py-3.5 text-sm font-bold tracking-wide rounded-t-xl transition-all border-t-2 -mb-px ${
-                activeTab === "documents"
-                  ? "bg-white border-orange-600 text-orange-600 shadow-sm"
-                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-              }`}
-            >
-              Documents
-            </button>
-
-            <button
-              onClick={() => setActiveTab("reviews")}
-              className={`px-6 py-3.5 text-sm font-bold tracking-wide rounded-t-xl transition-all border-t-2 -mb-px ${
-                activeTab === "reviews"
-                  ? "bg-white border-orange-600 text-orange-600 shadow-sm"
-                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-              }`}
-            >
-              Reviews
-            </button>
+        {/* Bottom Section: Single Content Block */}
+        <div className="border border-gray-200 rounded-sm bg-white overflow-hidden">
+          {/* Fixed Design Header Tab */}
+          <div className="border-b border-gray-200 bg-gray-50 px-4 pt-3">
+            <span className="inline-block bg-white border-t-2 border-t-[#1e1450] border-x border-x-gray-200 border-b-white px-5 py-2.5 text-xs font-bold text-[#1e1450] -mb-px">
+              Product Description
+            </span>
           </div>
 
-          {/* Panel View Switcher */}
-          <div className="p-6 md:p-8 min-h-[250px]">
-            {/* {activeTab === "description" && <div>{product.content}</div>} */}
-            {activeTab === "description" && (
-              <div
-                className="space-y-4 text-gray-700 text-sm leading-relaxed [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1"
-                dangerouslySetInnerHTML={{ __html: product.content }}
-              />
-            )}
+          {/* Sequential Display of Description, Tech Specs, & Documents */}
+          <div className="p-6 md:p-8 space-y-8 text-gray-800 text-sm leading-relaxed">
+            {/* Header info matching screenshot context */}
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-[#1e1450]">
+                {product.brand} {product.mpn}
+              </h3>
+              <h4 className="text-base font-semibold text-[#1e1450]">
+                {product.product_name}
+              </h4>
+            </div>
 
-            {activeTab === "technical" && (
-              <div className="space-y-8 max-w-4xl">
-                <div dangerouslySetInnerHTML={{ __html: product.tech_spec }} />
+            {/* Description / Content Section */}
+            {product.content && (
+              <div className="space-y-3">
+                <h5 className="font-bold text-[#1e1450] text-base">
+                  Product Description:
+                </h5>
+                <div
+                  className="space-y-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1"
+                  dangerouslySetInnerHTML={{ __html: product.content }}
+                />
               </div>
             )}
 
-            {activeTab === "reviews" && (
-              <div className="max-w-4xl py-8">{/* Empty for now */}</div>
-            )}
-
-            {activeTab === "documents" && (
-              <div className="space-y-6 max-w-4xl">
-                {product.documents && product.documents.length > 0 ? (
-                  <div className="border border-gray-50 rounded-xl overflow-hidden shadow-sm">
-                    <table className="w-full text-left text-sm border-collapse">
-                      <tbody className="divide-y divide-gray-100">
-                        {product.documents.map((doc: string, idx: number) => {
-                          // Extracts the file name from the path string (e.g., "manual.pdf")
-                          const fileName =
-                            doc.split("/").pop() || `Document ${idx + 1}`;
-
-                          return (
-                            <tr
-                              key={idx}
-                              className="hover:bg-gray-50/50 transition-colors"
-                            >
-                              <td className="px-6 py-4 font-medium text-gray-700 truncate max-w-md">
-                                {fileName}
-                              </td>
-                              <td className="px-6 py-4 text-right">
-                                <a
-                                  href={doc}
-                                  download
-                                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-500 hover:text-orange-600 transition-colors"
-                                >
-                                  <svg
-                                    className="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                                    />
-                                  </svg>
-                                  Download
-                                </a>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-sm text-gray-500 italic">
-                    No documents available for this product.
-                  </p>
-                )}
+            {/* Technical Information Section */}
+            {product.tech_spec && (
+              <div className="space-y-3 pt-4 border-t border-gray-100">
+                <h5 className="font-bold text-[#1e1450] text-base">
+                  Technical Information:
+                </h5>
+                <div
+                  className="space-y-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1"
+                  dangerouslySetInnerHTML={{ __html: product.tech_spec }}
+                />
               </div>
             )}
+
+            {/* Documents Download Table */}
+            {product.documents && product.documents.length > 0 && (
+              <div className="space-y-3 pt-4 border-t border-gray-100 max-w-2xl">
+                <h5 className="font-bold text-[#1e1450] text-base">
+                  Documents:
+                </h5>
+                <div className="border border-gray-200 rounded-sm overflow-hidden">
+                  <table className="w-full text-left text-sm border-collapse">
+                    <tbody className="divide-y divide-gray-200">
+                      {product.documents.map((docUrl: string, idx: number) => {
+                        const documentLabel = `Document ${idx + 1}`;
+
+                        // Helper function to force download across CORS/External domains
+                        const handleDownload = async (
+                          e: React.MouseEvent<HTMLAnchorElement>,
+                        ) => {
+                          e.preventDefault();
+                          try {
+                            const response = await fetch(docUrl);
+                            const blob = await response.blob();
+                            const url = window.URL.createObjectURL(blob);
+                            const link = document.createElement("a");
+                            link.href = url;
+
+                            // Get extension or fallback to pdf
+                            const ext =
+                              docUrl.split(".").pop()?.split("?")[0] || "pdf";
+                            link.download = `${documentLabel}.${ext}`;
+
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            window.URL.revokeObjectURL(url);
+                          } catch (error) {
+                            // Fallback direct open if fetch is strictly blocked by CORS
+                            window.open(docUrl, "_blank");
+                          }
+                        };
+
+                        return (
+                          <tr
+                            key={idx}
+                            className="hover:bg-gray-50 transition-colors"
+                          >
+                            <td className="px-4 py-3 font-medium text-gray-700 truncate">
+                              {documentLabel}
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                              <a
+                                href={docUrl}
+                                onClick={handleDownload}
+                                className="inline-flex items-center gap-1 text-xs font-semibold text-orange-600 hover:underline cursor-pointer"
+                              >
+                                Download
+                              </a>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* Footer Support Text */}
+            <p className="text-xs text-gray-500 pt-4 border-t border-gray-100">
+              For further information regarding {product.brand || "product"}{" "}
+              sales, please contact us.
+            </p>
           </div>
         </div>
       </main>
