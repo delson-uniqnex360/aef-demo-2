@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { getProductBySku } from "../api/productDetail";
@@ -25,6 +25,8 @@ const shareIcons = [
 export default function ProductDetailPage() {
   const { sku } = useParams<{ sku: string }>();
 
+  const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
   // Asynchronous product states
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -50,6 +52,19 @@ export default function ProductDetailPage() {
       setSelectedMedia("");
     }
   }, [product]);
+
+  useEffect(() => {
+    if (!product?.images) return;
+
+    const activeIndex = product.images.indexOf(selectedMedia);
+    if (activeIndex !== -1 && thumbnailRefs.current[activeIndex]) {
+      thumbnailRefs.current[activeIndex]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center", // Keeps the active thumbnail centered in the horizontal scroll container
+      });
+    }
+  }, [selectedMedia, product?.images]);
 
   // Helper to detect if a string is a YouTube URL
   const isYouTubeUrl = (url: string) => {
@@ -125,12 +140,99 @@ export default function ProductDetailPage() {
       </Helmet>
 
       <main className="max-w-[1200px] mx-auto px-4 py-8">
-        <AppTaxonomy products={[product]} />
-
+        {/* <div>Hello world</div> */}
+        <div className="mt-8">
+          <AppTaxonomy products={[product]} />
+        </div>
         {/* Top Section: Media Gallery and Product Details */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
           {/* Left Column: Gallery */}
+          {/* <div className="lg:col-span-6 space-y-4">
+            <div className="relative border border-gray-200 rounded-sm overflow-hidden aspect-[4/3] flex items-center justify-center bg-white p-2">
+              {isYouTubeUrl(selectedMedia) ? (
+                <iframe
+                  className="w-full h-full"
+                  src={`https://www.youtube.com/embed/${getYouTubeEmbedId(selectedMedia)}`}
+                  title="Product Video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              ) : (
+                <img
+                  src={selectedMedia || "/placeholder-image.jpg"}
+                  alt={product.product_name}
+                  className="w-full h-full object-contain"
+                />
+              )}
+            </div>
+
+           
+            <div className="relative flex items-center gap-2">
+              <button
+                onClick={() => {
+                  const currentIndex = product.images.indexOf(selectedMedia);
+                  const prevIndex =
+                    currentIndex <= 0
+                      ? product.images.length - 1
+                      : currentIndex - 1;
+                  setSelectedMedia(product.images[prevIndex]);
+                }}
+                className="text-gray-600 hover:text-black p-1 text-xl font-bold"
+                aria-label="Previous image"
+              >
+                ‹
+              </button>
+
+              <div className="flex gap-4 overflow-x-auto py-1 scrollbar-none flex-1">
+                {product.images?.map((media: string, index: number) => {
+                  const isVideo = isYouTubeUrl(media);
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedMedia(media)}
+                      className={`w-28 h-24 flex-shrink-0 border rounded-sm overflow-hidden bg-white p-2 flex items-center justify-center transition-all ${
+                        selectedMedia === media
+                          ? "border-orange-500 ring-1 ring-orange-500"
+                          : "border-gray-200 hover:border-gray-400"
+                      }`}
+                    >
+                      {isVideo ? (
+                        <div className="relative w-full h-full bg-gray-900 flex items-center justify-center">
+                          <span className="text-[10px] font-bold text-white tracking-wide">
+                            VIDEO
+                          </span>
+                        </div>
+                      ) : (
+                        <img
+                          src={media}
+                          alt={`Thumbnail ${index}`}
+                          className="w-full h-full object-contain"
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => {
+                  const currentIndex = product.images.indexOf(selectedMedia);
+                  const nextIndex =
+                    currentIndex === product.images.length - 1
+                      ? 0
+                      : currentIndex + 1;
+                  setSelectedMedia(product.images[nextIndex]);
+                }}
+                className="text-gray-600 hover:text-black p-1 text-xl font-bold"
+                aria-label="Next image"
+              >
+                ›
+              </button>
+            </div>
+          </div> */}
+
           <div className="lg:col-span-6 space-y-4">
+            {/* Main Image / Video Viewport */}
             <div className="relative border border-gray-200 rounded-sm overflow-hidden aspect-[4/3] flex items-center justify-center bg-white p-2">
               {isYouTubeUrl(selectedMedia) ? (
                 <iframe
@@ -169,12 +271,16 @@ export default function ProductDetailPage() {
               <div className="flex gap-4 overflow-x-auto py-1 scrollbar-none flex-1">
                 {product.images?.map((media: string, index: number) => {
                   const isVideo = isYouTubeUrl(media);
+                  const isSelected = selectedMedia === media;
+
                   return (
                     <button
                       key={index}
+                      //@ts-ignore
+                      ref={(el) => (thumbnailRefs.current[index] = el)}
                       onClick={() => setSelectedMedia(media)}
                       className={`w-28 h-24 flex-shrink-0 border rounded-sm overflow-hidden bg-white p-2 flex items-center justify-center transition-all ${
-                        selectedMedia === media
+                        isSelected
                           ? "border-orange-500 ring-1 ring-orange-500"
                           : "border-gray-200 hover:border-gray-400"
                       }`}
