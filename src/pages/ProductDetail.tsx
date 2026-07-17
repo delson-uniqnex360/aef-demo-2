@@ -294,36 +294,32 @@ export default function ProductDetailPage() {
           {/* Sequential Display of Description, Tech Specs, & Documents */}
           <div className="p-6 md:p-8 space-y-8 text-gray-800 text-sm leading-relaxed">
             {/* Header info matching screenshot context */}
-            <div className="space-y-1">
-              <h3 className="text-lg font-bold text-[#1e1450]">
-                {product.brand} {product.mpn}
-              </h3>
-              <h4 className="text-base font-semibold text-[#1e1450]">
-                {product.product_name}
-              </h4>
-            </div>
 
             {/* Description / Content Section */}
+            {/* {product.content && (
+              <div className="space-y-3">
+                <div
+                  // className="space-y-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1"
+                  dangerouslySetInnerHTML={{ __html: product.content }}
+                />
+              </div>
+            )} */}
             {product.content && (
               <div className="space-y-3">
-                <h5 className="font-bold text-[#1e1450] text-base">
-                  Product Description:
-                </h5>
                 <div
-                  className="space-y-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1"
+                  className="[&_*]:[all:revert]"
                   dangerouslySetInnerHTML={{ __html: product.content }}
                 />
               </div>
             )}
 
-            {/* Technical Information Section */}
             {product.tech_spec && (
               <div className="space-y-3 pt-4 border-t border-gray-100">
                 <h5 className="font-bold text-[#1e1450] text-base">
                   Technical Information:
                 </h5>
                 <div
-                  className="space-y-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1"
+                  className="[&_*]:[all:revert]"
                   dangerouslySetInnerHTML={{ __html: product.tech_spec }}
                 />
               </div>
@@ -338,56 +334,67 @@ export default function ProductDetailPage() {
                 <div className="border border-gray-200 rounded-sm overflow-hidden">
                   <table className="w-full text-left text-sm border-collapse">
                     <tbody className="divide-y divide-gray-200">
-                      {product.documents.map((docUrl: string, idx: number) => {
-                        const documentLabel = `Document ${idx + 1}`;
-
-                        // Helper function to force download across CORS/External domains
-                        const handleDownload = async (
-                          e: React.MouseEvent<HTMLAnchorElement>,
+                      {product.documents.map(
+                        (
+                          doc: { name?: string; path: string } | string,
+                          idx: number,
                         ) => {
-                          e.preventDefault();
-                          try {
-                            const response = await fetch(docUrl);
-                            const blob = await response.blob();
-                            const url = window.URL.createObjectURL(blob);
-                            const link = document.createElement("a");
-                            link.href = url;
+                          // Extract path/URL and custom name safely
+                          const docUrl =
+                            typeof doc === "string" ? doc : doc.path;
+                          const documentLabel =
+                            typeof doc !== "string" && doc.name
+                              ? doc.name
+                              : `Document ${idx + 1}`;
 
-                            // Get extension or fallback to pdf
-                            const ext =
-                              docUrl.split(".").pop()?.split("?")[0] || "pdf";
-                            link.download = `${documentLabel}.${ext}`;
+                          // Helper function to force download across CORS/External domains
+                          const handleDownload = async (
+                            e: React.MouseEvent<HTMLAnchorElement>,
+                          ) => {
+                            e.preventDefault();
+                            try {
+                              const response = await fetch(docUrl);
+                              const blob = await response.blob();
+                              const url = window.URL.createObjectURL(blob);
+                              const link = document.createElement("a");
+                              link.href = url;
 
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                            window.URL.revokeObjectURL(url);
-                          } catch (error) {
-                            // Fallback direct open if fetch is strictly blocked by CORS
-                            window.open(docUrl, "_blank");
-                          }
-                        };
+                              // Get extension or fallback to pdf
+                              const ext =
+                                docUrl.split(".").pop()?.split("?")[0] || "pdf";
+                              link.download = `${documentLabel}.${ext}`;
 
-                        return (
-                          <tr
-                            key={idx}
-                            className="hover:bg-gray-50 transition-colors"
-                          >
-                            <td className="px-4 py-3 font-medium text-gray-700 truncate">
-                              {documentLabel}
-                            </td>
-                            <td className="px-4 py-3 text-right">
-                              <a
-                                href={docUrl}
-                                onClick={handleDownload}
-                                className="inline-flex items-center gap-1 text-xs font-semibold text-orange-600 hover:underline cursor-pointer"
-                              >
-                                Download
-                              </a>
-                            </td>
-                          </tr>
-                        );
-                      })}
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                              window.URL.revokeObjectURL(url);
+                            } catch (error) {
+                              // Fallback direct open if fetch is strictly blocked by CORS
+                              window.open(docUrl, "_blank");
+                            }
+                          };
+
+                          return (
+                            <tr
+                              key={idx}
+                              className="hover:bg-gray-50 transition-colors"
+                            >
+                              <td className="px-4 py-3 font-medium text-gray-700 truncate">
+                                {documentLabel}
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <a
+                                  href={docUrl}
+                                  onClick={handleDownload}
+                                  className="inline-flex items-center gap-1 text-xs font-semibold text-orange-600 hover:underline cursor-pointer"
+                                >
+                                  Download
+                                </a>
+                              </td>
+                            </tr>
+                          );
+                        },
+                      )}
                     </tbody>
                   </table>
                 </div>
