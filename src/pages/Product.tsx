@@ -4,11 +4,11 @@ import { buildCategoryTree } from "../api/category";
 import { getProductsByFlexLevel } from "../api/product";
 import AppTaxonomy from "../components/AppTaxonomy";
 
-
 export default function ProductPage() {
   const { categorySlug } = useParams<{ categorySlug: string }>();
 
   const [productsToDisplay, setProductsToDisplay] = useState<any[]>([]);
+  const [allDbProducts, setAllDbProducts] = useState<any[]>([]);
   const [breadcrumbs, setBreadcrumbs] = useState<string[]>([]);
   const [pageTitle, setPageTitle] = useState<string>("Products");
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,6 +30,8 @@ export default function ProductPage() {
       })
       .then((rawData) => {
         const products = Array.isArray(rawData) ? rawData : rawData.data;
+        setAllDbProducts(products ?? []);
+
         const tree = buildCategoryTree(products ?? []);
         const result = getProductsByFlexLevel(
           tree,
@@ -49,8 +51,6 @@ export default function ProductPage() {
       });
   }, [categorySlug]);
 
-  console.log("product to displya", productsToDisplay);
-
   if (loading) {
     return (
       <div className="max-w-[1200px] mx-auto px-4 py-16 text-center text-sm font-semibold text-gray-400 animate-pulse">
@@ -61,7 +61,8 @@ export default function ProductPage() {
 
   return (
     <main className="max-w-[1200px] mx-auto px-4 py-8 bg-gray-50/50 min-h-screen font-sans antialiased">
-      <AppTaxonomy products={productsToDisplay}/>
+      <AppTaxonomy products={productsToDisplay} />
+
       {/* 1. Dynamic Breadcrumbs */}
       <nav className="text-xs md:text-sm text-gray-500 mb-6 flex flex-wrap gap-1 items-center capitalize">
         <Link
@@ -116,7 +117,11 @@ export default function ProductPage() {
           <div className="flex items-center border border-gray-200 rounded bg-white p-0.5 shadow-sm">
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 rounded transition-colors ${viewMode === "grid" ? "bg-gray-100 text-orange-600" : "text-gray-400 hover:text-gray-600"}`}
+              className={`p-2 rounded transition-colors ${
+                viewMode === "grid"
+                  ? "bg-gray-100 text-orange-600"
+                  : "text-gray-400 hover:text-gray-600"
+              }`}
               title="Grid View"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -125,7 +130,11 @@ export default function ProductPage() {
             </button>
             <button
               onClick={() => setViewMode("list")}
-              className={`p-2 rounded transition-colors ${viewMode === "list" ? "bg-gray-100 text-orange-600" : "text-gray-400 hover:text-gray-600"}`}
+              className={`p-2 rounded transition-colors ${
+                viewMode === "list"
+                  ? "bg-gray-100 text-orange-600"
+                  : "text-gray-400 hover:text-gray-600"
+              }`}
               title="List View"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -153,31 +162,68 @@ export default function ProductPage() {
               : "flex flex-col gap-4"
           }
         >
-          {productsToDisplay.map((product) => {
-            const productImg =
-              product.images?.[0] ||
-              "https://via.placeholder.com/400x300?text=No+Product+Image";
-            const basePrice = product.price ? Math.floor(product.price) : 129;
-            const decimalPrice = product.price
-              ? (product.price % 1).toFixed(2).slice(2)
-              : "99";
+          {productsToDisplay.map((item) => {
+            // Find full product details from db.json using the SKU
+            const fullProduct =
+              allDbProducts.find(
+                (p) =>
+                  p.sku &&
+                  item.sku &&
+                  p.sku.toLowerCase() === item.sku.toLowerCase(),
+              ) || item;
 
-            const productSku = encodeURIComponent(
-              product.sku?.toString() || "unknown-sku",
+            const productName =
+              fullProduct.product_name ||
+              fullProduct.name ||
+              item.product_name ||
+              item.name ||
+              "Unnamed Product";
+
+            const productImg =
+              fullProduct.images?.[0] ||
+              item.images?.[0] ||
+              fullProduct.category_image ||
+              item.category_image ||
+              "https://via.placeholder.com/400x300?text=No+Product+Image";
+
+            // Extract numeric price safely from fullProduct
+            const rawPriceStr = String(
+              fullProduct.price ??
+                fullProduct.unitPrice ??
+                fullProduct.cost ??
+                item.price ??
+                "",
             );
 
-            console.log("proudct", product, productSku);
+            const parsedPrice = parseFloat(rawPriceStr);
+            const isValidPrice = !isNaN(parsedPrice) && parsedPrice >= 0;
+
+            const formattedPrice = isValidPrice
+              ? parsedPrice.toFixed(2)
+              : "0.00";
+            const [basePrice, decimalPrice] = formattedPrice.split(".");
+
+            const productSku = encodeURIComponent(
+              (fullProduct.sku || item.sku)?.toString() || "unknown-sku",
+            );
+
+            const displayId =
+              fullProduct.sku ||
+              item.sku ||
+              fullProduct.mpn ||
+              item.mpn ||
+              "N/A";
 
             return (
               <div
-                key={product.id}
+                key={displayId || Math.random()}
                 className={`bg-white border border-gray-200/80 rounded-xl hover:shadow-md hover:border-gray-300 transition-all duration-200 overflow-hidden group ${
                   viewMode === "grid"
                     ? "flex flex-col"
                     : "grid grid-cols-1 md:grid-cols-[160px_1fr_220px] items-stretch"
                 }`}
               >
-                {/* 1. PRODUCT IMAGE LINK */}
+                {/* PRODUCT IMAGE LINK */}
                 <Link
                   to={`/product/detail/${productSku}`}
                   className={`bg-gray-50 flex items-center justify-center relative overflow-hidden transition-opacity hover:opacity-90 ${
@@ -188,7 +234,7 @@ export default function ProductPage() {
                 >
                   <img
                     src={productImg}
-                    alt={product.name}
+                    alt={productName}
                     className={`object-contain mix-blend-multiply transform group-hover:scale-105 transition-transform duration-300 ease-out ${
                       viewMode === "grid"
                         ? "max-h-full max-w-full"
@@ -198,26 +244,23 @@ export default function ProductPage() {
                   />
                 </Link>
 
-                {/* 2. PRODUCT DETAILS LINK (CENTER PANEL) */}
+                {/* PRODUCT DETAILS LINK */}
                 <Link
                   to={`/product/detail/${productSku}`}
                   className="p-5 flex flex-col justify-center border-b md:border-b-0 md:border-r border-gray-100 block hover:no-underline"
                 >
                   <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                     <span className="text-[11px] uppercase font-bold text-orange-600 tracking-wider">
-                      {product.brand || "Generic"}
+                      {fullProduct.brand || item.brand || "Generic"}
                     </span>
                     <span className="text-gray-300 text-[10px]">•</span>
                     <span className="text-[10px] text-gray-400 font-mono">
-                      ID:{" "}
-                      {product.id
-                        ? product.id.toString().toUpperCase().slice(0, 12)
-                        : "VACUUM-1"}
+                      SKU: {displayId}
                     </span>
                   </div>
 
                   <h3 className="text-sm md:text-base font-bold text-gray-800 group-hover:text-orange-600 transition-colors mb-3 leading-snug line-clamp-2">
-                    {product.name}
+                    {productName}
                   </h3>
 
                   <div>
@@ -228,18 +271,28 @@ export default function ProductPage() {
                   </div>
                 </Link>
 
-                {/* 3. PRICE / REDIRECT ACTION PANEL */}
+                {/* PRICE / ACTION PANEL (LIST VIEW) */}
                 <div
-                  className={`p-5 flex flex-col justify-center bg-gray-50/50 ${viewMode === "grid" ? "hidden" : "flex"}`}
+                  className={`p-5 flex flex-col justify-center bg-gray-50/50 ${
+                    viewMode === "grid" ? "hidden" : "flex"
+                  }`}
                 >
                   <div className="text-left md:text-right mb-4">
-                    <div className="flex items-baseline justify-start md:justify-end text-gray-900">
-                      <span className="text-xs font-bold mr-0.5">€</span>
-                      <span className="text-2xl font-black tracking-tight leading-none">
-                        {basePrice}
+                    {isValidPrice ? (
+                      <div className="flex items-baseline justify-start md:justify-end text-gray-900">
+                        <span className="text-xs font-bold mr-0.5">€</span>
+                        <span className="text-2xl font-black tracking-tight leading-none">
+                          {basePrice}
+                        </span>
+                        <span className="text-xs font-bold">
+                          .{decimalPrice}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-xs font-semibold text-gray-500">
+                        Price on Request
                       </span>
-                      <span className="text-xs font-bold">.{decimalPrice}</span>
-                    </div>
+                    )}
                     <span className="text-[10px] text-gray-400 block font-normal mt-1">
                       incl. VAT taxes
                     </span>
@@ -253,19 +306,25 @@ export default function ProductPage() {
                   </Link>
                 </div>
 
-                {/* Grid view layout action bar */}
+                {/* PRICE / ACTION PANEL (GRID VIEW) */}
                 {viewMode === "grid" && (
                   <div className="mt-auto p-4 pt-0 border-t border-gray-50 flex items-center justify-between gap-2">
                     <div className="text-gray-900">
-                      <div className="flex items-baseline">
-                        <span className="text-xs font-bold">€</span>
-                        <span className="text-lg font-black tracking-tight">
-                          {basePrice}
+                      {isValidPrice ? (
+                        <div className="flex items-baseline">
+                          <span className="text-xs font-bold">€</span>
+                          <span className="text-lg font-black tracking-tight">
+                            {basePrice}
+                          </span>
+                          <span className="text-xs font-bold">
+                            .{decimalPrice}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-[11px] font-semibold text-gray-500">
+                          Price on Request
                         </span>
-                        <span className="text-xs font-bold">
-                          .{decimalPrice}
-                        </span>
-                      </div>
+                      )}
                     </div>
                     <Link
                       to={`/product/detail/${productSku}`}
