@@ -217,11 +217,11 @@ export default function ProductDetailPage() {
           {/* Right Column: Information & Actions */}
           <div className="lg:col-span-6 space-y-4">
             <div>
-              <h1 className="text-3xl font-normal text-[#1e1450] tracking-tight leading-tight mb-1">
+              <h1 className="text-[2.5em] font-normal text-[rgb(31,12,87)] tracking-tight leading-tight mb-1">
                 {product.product_name}
               </h1>
-              <p className="text-sm text-gray-500 flex items-center gap-1">
-                <span className="text-gray-400">└</span> {product.mpn}
+              <p className="text-sm text-[#1F0C57] flex items-center gap-1">
+                <span className="text-[#1F0C57]">└</span> {product.mpn}
               </p>
             </div>
 
@@ -286,28 +286,17 @@ export default function ProductDetailPage() {
         <div className="border border-gray-200 rounded-sm bg-white overflow-hidden">
           {/* Fixed Design Header Tab */}
           <div className="border-b border-gray-200 bg-gray-50 px-4 pt-3">
-            <span className="inline-block bg-white border-t-2 border-t-[#1e1450] border-x border-x-gray-200 border-b-white px-5 py-2.5 text-xs font-bold text-[#1e1450] -mb-px">
+            <span className="inline-block text-[#1F0C57] bg-white border-t-2 border-t-[#1e1450] border-x border-x-gray-200 border-b-white px-5 py-2.5 text-[16.5px] font-bold -mb-px">
               Product Description
             </span>
           </div>
 
           {/* Sequential Display of Description, Tech Specs, & Documents */}
           <div className="p-6 md:p-8 space-y-8 text-gray-800 text-sm leading-relaxed">
-            {/* Header info matching screenshot context */}
-
-            {/* Description / Content Section */}
-            {/* {product.content && (
-              <div className="space-y-3">
-                <div
-                  // className="space-y-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1"
-                  dangerouslySetInnerHTML={{ __html: product.content }}
-                />
-              </div>
-            )} */}
             {product.content && (
               <div className="space-y-3">
                 <div
-                  className="[&_*]:[all:revert]"
+                  className="[&_*]:[all:revert] text-[16px]"
                   dangerouslySetInnerHTML={{ __html: product.content }}
                 />
               </div>
@@ -315,11 +304,17 @@ export default function ProductDetailPage() {
 
             {product.tech_spec && (
               <div className="space-y-3 pt-4 border-t border-gray-100">
-                <h5 className="font-bold text-[#1e1450] text-base">
+                <h5
+                  style={{
+                    fontSize: "22.4px",
+                    color: "rgb(31, 12, 87)",
+                    fontWeight: 400,
+                  }}
+                >
                   Technical Information:
                 </h5>
                 <div
-                  className="[&_*]:[all:revert]"
+                  className="[&_*]:[all:revert] text-[16px] font-normal text-[rgb(51,51,51)]"
                   dangerouslySetInnerHTML={{ __html: product.tech_spec }}
                 />
               </div>
@@ -328,7 +323,13 @@ export default function ProductDetailPage() {
             {/* Documents Download Table */}
             {product.documents && product.documents.length > 0 && (
               <div className="space-y-3 pt-4 border-t border-gray-100 max-w-2xl">
-                <h5 className="font-bold text-[#1e1450] text-base">
+                <h5
+                  style={{
+                    fontSize: "22.4px",
+                    color: "rgb(31, 12, 87)",
+                    fontWeight: 400,
+                  }}
+                >
                   Documents:
                 </h5>
                 <div className="border border-gray-200 rounded-sm overflow-hidden">
@@ -402,7 +403,7 @@ export default function ProductDetailPage() {
             )}
 
             {/* Footer Support Text */}
-            <p className="text-xs text-gray-500 pt-4 border-t border-gray-100">
+            <p className="font-normal text-[rgb(51,51,51)]  text-[16px] pt-4 ">
               For further information regarding {product.brand || "product"}{" "}
               sales, please contact us.
             </p>
