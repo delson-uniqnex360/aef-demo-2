@@ -253,22 +253,26 @@ export default function ProductDetailPage() {
 
             {/* Scrollable Thumbnails row with side navigation arrows */}
             <div className="relative flex items-center gap-2">
-              <button
-                onClick={() => {
-                  const currentIndex = product.images.indexOf(selectedMedia);
-                  const prevIndex =
-                    currentIndex <= 0
-                      ? product.images.length - 1
-                      : currentIndex - 1;
-                  setSelectedMedia(product.images[prevIndex]);
-                }}
-                className="text-gray-600 hover:text-black p-1 text-xl font-bold"
-                aria-label="Previous image"
-              >
-                ‹
-              </button>
+              {/* Only show Previous button if there is more than 1 image */}
+              {product.images?.length > 1 && (
+                <button
+                  onClick={() => {
+                    const currentIndex = product.images.indexOf(selectedMedia);
+                    const prevIndex =
+                      currentIndex <= 0
+                        ? product.images.length - 1
+                        : currentIndex - 1;
+                    setSelectedMedia(product.images[prevIndex]);
+                  }}
+                  className="text-gray-600 hover:text-black p-1 text-xl font-bold shrink-0"
+                  aria-label="Previous image"
+                >
+                  ‹
+                </button>
+              )}
 
-              <div className="flex gap-4 overflow-x-auto py-1 scrollbar-none flex-1">
+              {/* Added justify-center so thumbnail stays centered when items are few */}
+              <div className="flex gap-4 overflow-x-auto py-1 scrollbar-none flex-1 justify-center">
                 {product.images?.map((media: string, index: number) => {
                   const isVideo = isYouTubeUrl(media);
                   const isSelected = selectedMedia === media;
@@ -303,20 +307,23 @@ export default function ProductDetailPage() {
                 })}
               </div>
 
-              <button
-                onClick={() => {
-                  const currentIndex = product.images.indexOf(selectedMedia);
-                  const nextIndex =
-                    currentIndex === product.images.length - 1
-                      ? 0
-                      : currentIndex + 1;
-                  setSelectedMedia(product.images[nextIndex]);
-                }}
-                className="text-gray-600 hover:text-black p-1 text-xl font-bold"
-                aria-label="Next image"
-              >
-                ›
-              </button>
+              {/* Only show Next button if there is more than 1 image */}
+              {product.images?.length > 1 && (
+                <button
+                  onClick={() => {
+                    const currentIndex = product.images.indexOf(selectedMedia);
+                    const nextIndex =
+                      currentIndex === product.images.length - 1
+                        ? 0
+                        : currentIndex + 1;
+                    setSelectedMedia(product.images[nextIndex]);
+                  }}
+                  className="text-gray-600 hover:text-black p-1 text-xl font-bold shrink-0"
+                  aria-label="Next image"
+                >
+                  ›
+                </button>
+              )}
             </div>
           </div>
 
@@ -338,14 +345,19 @@ export default function ProductDetailPage() {
               const centsPart = (priceNum % 1).toFixed(2).split(".")[1];
 
               return (
-                <div className="flex items-baseline gap-0.5 text-[#1e1450]">
-                  <span className="text-3xl font-extrabold tracking-tight">
+                <div className="flex items-start text-[#1e1450] font-sans">
+                  {/* Currency Symbol and Whole Number */}
+                  <span className="text-4xl font-extrabold leading-none tracking-tight">
                     {product.currency === "EUR" ? "€" : product.currency || "$"}
                     {integerPart}
                   </span>
-                  <div className="flex flex-col text-left leading-none ml-0.5">
-                    <span className="text-sm font-bold">.{centsPart}</span>
-                    <span className="text-[10px] text-gray-500 font-normal">
+
+                  {/* Cents and 'incl VAT' stacked vertically next to the top */}
+                  <div className="flex flex-col text-left leading-none ml-[1px] mt-[1px]">
+                    <span className="text-base font-bold tracking-tight">
+                      .{centsPart}
+                    </span>
+                    <span className="text-[11px] text-[#1e1450] font-normal mt-1 whitespace-nowrap">
                       incl VAT
                     </span>
                   </div>
