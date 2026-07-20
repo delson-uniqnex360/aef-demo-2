@@ -28,14 +28,14 @@
       "price": "451.09",
       "currency": "EUR",
       "images": [
-        "https://be.prod.metabo.com/product/products/5420/image-thumb__5420__product_detail-desktop/0103152000s_56_m_website.4631aa4b.webp",
-        "https://be.prod.metabo.com/product/products/8780/image-thumb__8780__product_detail-desktop/0103152000A_02_website.eb913260.webp",
-        "https://be.prod.metabo.com/product/products/8781/image-thumb__8781__product_detail-desktop/0103152000D_01_website.c28c3d8f.webp",
-        "https://be.prod.metabo.com/product/products/5423/image-thumb__5423__product_detail-desktop/0103152000d_08_m_website.215aa83a.webp",
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/f4/f4a602f7ac2c9e9cd86e478c472b1828d147a83b.jpg",
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/3f/3f2b3db0466ca8df62974fefdcc484f10ff33bbf.jpg",
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/a0/a0b74228647418b59f2326cc21498c722e82c437.jpg",
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/aa/aa45e8c80a3aee97ef345aae9f6207e8a0d0e3f6.jpg"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528261/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/d57e82b5-6278-4ad3-b74f-a1a0d8ea9d06.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528261/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/4b21367d-e095-4704-b7e7-ed971820bb79.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528260/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/066c5f42-62ba-4010-9fbb-4ab19b3ddc18.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528259/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/718f3de8-27ea-4d59-b454-90a5830d496f.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526095/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/1b7d3a3e-ae1d-4b70-b802-dc170788a3b5.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526095/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/a732b1e3-77e2-4b82-959a-f6a9480c2f85.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526096/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/6ca9feec-27ae-455d-8874-b90311b5acc8.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526096/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/bd0e82ff-e194-4f56-a2e7-4e29a29a53cd.jpg.jpg"
       ],
       "documents": [
         {
@@ -66,7 +66,7 @@
       "price": "52.14",
       "currency": "EUR",
       "images": [
-        "https://cdn.klium.com/images/e5e00240-63d8-4f58-acd3-4721c288cb45/metabo_0901054940/metabo_0901054940_532x532.webp"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526097/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/c00b789c-35a0-4cab-a100-4dfd17dcd9c5.jpg.jpg"
       ],
       "documents": [
         {
@@ -97,7 +97,7 @@
       "price": "753.15",
       "currency": "EUR",
       "images": [
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/be/be1d1130fd9ca360b83419f95565c4fa712d8178.jpg"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526081/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/d8342a9f-b476-4ea6-81a3-68d599cb1cec.jpg.jpg"
       ],
       "documents": [
         {
@@ -129,16 +129,16 @@
       "price": "336.81",
       "currency": "EUR",
       "images": [
-        "https://cdn2.ridgid.com/resources/images/d68ba41d-8ce4-488a-8301-0518da2ea79e",
-        "https://cdn2.ridgid.com/resources/images/ab1790fa-bf9b-4e06-bf5f-6f79d4cc3a32",
-        "https://cdn2.ridgid.com/resources/images/463a6cfa-b2d1-4988-a714-b05a599df916",
-        "https://cdn2.ridgid.com/resources/images/bed76557-2461-4d29-bddc-4613697e148b",
-        "https://cdn2.ridgid.com/resources/images/d0e1a308-f14f-4db2-8cdf-588576f046bc",
-        "https://cdn2.ridgid.com/resources/images/2377e4aa-a078-40f9-a710-e3909d3f4a8e",
-        "https://cdn2.ridgid.com/resources/images/2dc02ae5-c4d3-4ef0-ac14-a064e900f5fe",
-        "https://cdn2.ridgid.com/resources/images/20462a36-aba8-4e41-aa60-f824f421500f",
-        "https://cdn2.ridgid.com/resources/images/723d8b53-e401-4a3f-a52d-15588d21979d",
-        "https://cdn2.ridgid.com/resources/images/63357ea0-d202-4d4b-afc6-7de4f93d7173"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526081/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/2de2a329-3d9b-4737-9e9c-ed7e48dd032c.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526082/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/ccb80794-9254-4e23-b7c2-8862e705bedc.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526083/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/285b2f0e-f8f0-4ec3-a31f-3b4e9acd910a.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526084/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/03563a9a-be04-4bce-a959-59d6ca55b7a7.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526083/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/a9b89e7a-60f9-4cdb-9011-22f8fd980ccd.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526084/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/6820b1a5-2e18-4906-989e-af9b0ae1c9b4.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526085/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/2be2fa55-0c7e-4a2a-91bb-ac665782d3fa.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526086/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/e66eb56d-5ae9-493b-b513-38c2fdaba945.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526085/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/fdf1d84f-bece-40f3-befc-524c6dd42769.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526086/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/dd4e3d5f-2399-463b-8ab3-a8612cdcacc6.jpg.jpg"
       ],
       "documents": [
         {
@@ -165,10 +165,10 @@
       "price": "85.76",
       "currency": "EUR",
       "images": [
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/3e/3eb2941968cb8158fbf84bd91a701df1f59c34d2.jpg",
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/7d/7db43d98ae64e3d2387f3571ca343add2b8bb1d8.jpg",
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/f8/f8b3565ae960a0f3cddcaacd39942c1205d7c40f.jpg",
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/59/59ea61ad67be03ddea208afe8fecabc69080adcb.jpg"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526091/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/f472b272-e979-437d-8163-baee0ba0c2c2.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526092/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/85d778aa-49f4-4898-a869-9aa901fb01cb.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526093/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/f29abba6-1eae-4882-a06f-79e739a02652.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784526094/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/3d7ea489-b990-4a19-ab4e-f837e26d5065.jpg.jpg"
       ],
       "documents": [
         {
@@ -211,8 +211,8 @@
       "price": "0.73",
       "currency": "EUR",
       "images": [
-        "https://cdn11.bigcommerce.com/s-l4y5j8tpyi/products/15665/images/15411/owletts-shield-anchor-loose-bolt-zyp-m8x10l-pk6-b032532-1__09592.1668125463.1280.1280.jpg?c=1",
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/c7/c706e70638822ab32d8c09510b33264b1642594b.jpg"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528680/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/00b98f63-b0f1-4f16-a9b4-e6529d60623f.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528679/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/3684fce7-f7fc-4cd2-a557-be0b584bcfdd.jpg.jpg"
       ],
       "documents": [
         {
@@ -243,8 +243,7 @@
       "price": "0.23",
       "currency": "EUR",
       "images": [
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/7f/7f1eb2c7a8a42954a7e444d24878142c8e9abfd4.jpg",
-        "https://www.dfsfixings.com/image.php?filename=awa06060.jpg&stockcode=AWA06060&category=00210002000400110003&width=350&height=350"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528681/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/cd0498ff-639e-49de-b936-1496ec1a19c6.jpg.jpg"
       ],
       "documents": [
         {
@@ -275,9 +274,9 @@
       "price": "0.23",
       "currency": "EUR",
       "images": [
-        "https://www.jcpfixings.co.uk/wp-content/uploads/2022/11/Nylon-Frame-Fixing-ZY-1024x1024.jpg",
-        "https://www.jcpfixings.co.uk/wp-content/uploads/2024/10/Nylon-Frame-Fixing_NFF_Re00-Temp0035-with-JCP-1024x576.png",
-        "https://www.triard.co.uk/images/product_image/Nylon%20Frame%20Anchor%20No.%2030.jpg"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528681/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/67cd88ec-00a1-4c62-b680-4375c33bc578.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528682/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/7f76573e-fde1-4338-87ec-030d5d9c2945.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528682/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/cc0fd4b9-c4ed-40dc-b88e-b7d5e2783142.jpg.jpg"
       ],
       "documents": [
         {
@@ -304,8 +303,8 @@
       "price": "0.07",
       "currency": "EUR",
       "images": [
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/b7/b703b40fbc6f0360f6d41f39f25d9b16a4f3767f.jpg",
-        "https://media.witglobal.net/source/eshop/stmedia/0200/images/std.lang.all/resolutions/category/800px/194260.jpg"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528678/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/b55ced35-fa07-4e10-b406-5362f7567605.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528679/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/6a521799-69a6-45f8-88bd-fa360fde3031.jpg.jpg"
       ],
       "documents": [
         {
@@ -332,8 +331,8 @@
       "price": "0.07",
       "currency": "EUR",
       "images": [
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/c1/c1e9643e41baf04e5b06f973d2e88e3b82689dbf.jpg",
-        "https://be.prod.metabo.com/product/products/5420/image-thumb__5420__product_detail-desktop/0103152000s_56_m_website.4631aa4b.webp"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528677/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/51cf201d-0e90-42ab-822e-0e62413390dc.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784528678/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/69218a10-661e-4b66-af82-c75aae4669d3.jpg.jpg"
       ],
       "documents": [
         {
@@ -364,8 +363,8 @@
       "price": "190.33",
       "currency": "EUR",
       "images": [
-        "https://www.borit.com/cdn/shop/products/0386-1293_TX-504_left_hi_5000x.jpg?v=1658447839",
-        "https://www.borit.com/cdn/shop/products/0386-1293_TX-504_pkg_front_hi-1_5000x.jpg?v=1658448036"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784530957/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/26a75da3-b520-4ead-a353-bb84ba45a697.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784530958/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/2db7eab7-847e-4fa2-bcb1-d3b67607a11e.jpg.jpg"
       ],
       "documents": [
         {
@@ -396,8 +395,8 @@
       "price": "54.99",
       "currency": "EUR",
       "images": [
-        "https://specialisedwelding.co.uk/cdn/shop/files/3037_SWP.png?v=1746697900",
-        "https://specialisedwelding.co.uk/cdn/shop/files/HG-2001.png?v=1746697900&width=1946"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784531596/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/60b4ed16-2306-4aac-b0a0-bb1ba9b832c1.jpg.jpg",
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784531595/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/ee111cf6-0510-40ab-9c8a-ce8f318390da.jpg.jpg"
       ],
       "documents": [
         {
@@ -427,7 +426,9 @@
       "status": "visible",
       "price": "23.15",
       "currency": "EUR",
-      "images": ["https://www.waspsupplies.com/images/400x400/SCL3026.png"],
+      "images": [
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784530953/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/cd21b654-e31b-494f-8183-3432ce4deee8.jpg.jpg"
+      ],
       "documents": [
         {
           "name": "Data Sheet-AWA06060 (Sample)",
@@ -453,7 +454,7 @@
       "price": "24.07",
       "currency": "EUR",
       "images": [
-        "https://www.weldaseurope.com/wp-content/uploads/2024/02/23-3615-JPG-1500x1536.jpg"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784530954/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/07b8df95-2f74-47a6-a503-be5654875361.jpg.jpg"
       ],
       "documents": [
         {
@@ -484,7 +485,7 @@
       "price": "11.21",
       "currency": "EUR",
       "images": [
-        "https://media.witglobal.net/source/eshop/stmedia/0401/images/std.lang.all/resolutions/category/576px/639694239.jpg"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1784530955/processed/92d8eb03-cce8-4ca7-9b03-00b05dd65607/e7159d07-630d-491a-a640-bbf4135a2e03.jpg.jpg"
       ],
       "documents": [
         {
