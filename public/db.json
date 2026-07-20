@@ -7,6 +7,7 @@
       "category_image": "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/29/2965f3cf7401de5cc6cc5f8d0f65f7005b02f638.png"
     },
     {
+      "id": 1,
       "sku": "0103152038",
       "product_name": "Metabo Portable Table Saw TKHS315C 240V",
       "brand": "Metabo",
@@ -44,6 +45,7 @@
       ]
     },
     {
+      "id": 2,
       "sku": "0901054940",
       "product_name": "Spirol Hose 8mm 5M PA Euro 6mm x 8mm L5M",
       "brand": "Metabo",
@@ -74,6 +76,7 @@
       ]
     },
     {
+      "id": 3,
       "sku": "16728",
       "product_name": "Remote Transmitter",
       "brand": "RIDGID",
@@ -104,6 +107,7 @@
       ]
     },
     {
+      "id": 4,
       "sku": "20943",
       "product_name": "Hand Threader Die Heads 11-R RH NPT 2in",
       "brand": "RIDGID",
@@ -144,6 +148,7 @@
       ]
     },
     {
+      "id": 5,
       "sku": "26821",
       "product_name": "1435N Plastic Pipe Cutter",
       "brand": "RIDGID",
@@ -185,6 +190,7 @@
       "category_image": "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/25/25a0cc6b54dfdb4f7220467f8514029dfbb53691.png"
     },
     {
+      "id": 6,
       "sku": "ALB0610",
       "product_name": "JCP Shield Anchor Loose Bolt 6 X 60mm Zinc Plated",
       "brand": "JCP",
@@ -216,6 +222,7 @@
       ]
     },
     {
+      "id": 7,
       "sku": "AWA06060",
       "product_name": "JCP Through Bolt Clear Zinc Plated 6 x 60mm",
       "brand": "JCP",
@@ -247,6 +254,7 @@
       ]
     },
     {
+      "id": "8",
       "sku": "NFF08060",
       "product_name": "JCP Drive Screw  Frame Fixing Zinc Plated 8 x 60mm",
       "brand": "JCP",
@@ -279,6 +287,7 @@
       ]
     },
     {
+      "id": 9,
       "sku": "01861460",
       "product_name": "Reca Chipboard Screws Countersunk Pozi 4mm x 60mm Zinc Yellow Box Quantity 200",
       "brand": "Reca",
@@ -306,6 +315,7 @@
       ]
     },
     {
+      "id": 10,
       "sku": "0186550",
       "product_name": "Reca Chipboard Screws Countersunk Pozi 5mm x 50mm Zinc Yellow Box Quantity 200",
       "brand": "Reca",
@@ -337,6 +347,7 @@
       "category_image": "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/03/037832dfe2116ab2582807ada68b498642e826c3.png"
     },
     {
+      "id": 11,
       "sku": "TX504",
       "product_name": "TX504 Extreme Turbotorch Gas Trigger Torch ",
       "brand": "AEF",
@@ -364,6 +375,7 @@
       ]
     },
     {
+      "id": 12,
       "sku": "3037",
       "product_name": "Black Auto-Darkening Welding Helmet ",
       "brand": "SWP",
@@ -384,8 +396,8 @@
       "price": "54.99",
       "currency": "EUR",
       "images": [
-        "https://specialisedwelding.co.uk/cdn/shop/files/HG-2001.png?v=1746697900&width=1946",
-        "https://specialisedwelding.co.uk/cdn/shop/files/3037_SWP.png?v=1746697900"
+        "https://specialisedwelding.co.uk/cdn/shop/files/3037_SWP.png?v=1746697900",
+        "https://specialisedwelding.co.uk/cdn/shop/files/HG-2001.png?v=1746697900&width=1946"
       ],
       "documents": [
         {
@@ -395,6 +407,7 @@
       ]
     },
     {
+      "id": 13,
       "sku": "3026",
       "product_name": "SWP Outer Lens 118 X 97mm (5pk) STEALTH XG-ADPRO",
       "brand": "SWP",
@@ -423,6 +436,7 @@
       ]
     },
     {
+      "id": "14",
       "sku": "23-3615",
       "product_name": "Weldass Blk Bandana Flame Retardant Cotton",
       "brand": "Weldass",
@@ -449,8 +463,9 @@
       ]
     },
     {
+      "id": 15,
       "sku": "623520000",
-      "product_name": "Weldass Blk Bandana Flame Retardant Cotton",
+      "product_name": "Polishing Paste White 250G",
       "brand": "Metabo",
       "mpn": "23-3615",
       "categories": [

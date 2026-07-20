@@ -26,11 +26,13 @@ export default function ProductDetailPage() {
   const { sku } = useParams<{ sku: string }>();
 
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const scrollContainerRef = useRef(null);
 
   // Asynchronous product states
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedMedia, setSelectedMedia] = useState("");
+  const [isScrollable, setIsScrollable] = useState(false);
 
   // Handle async product fetching
   useEffect(() => {
@@ -65,6 +67,19 @@ export default function ProductDetailPage() {
       });
     }
   }, [selectedMedia, product?.images]);
+
+  useEffect(() => {
+    const checkScrollable = () => {
+      if (scrollContainerRef.current) {
+        const { scrollWidth, clientWidth } = scrollContainerRef.current;
+        setIsScrollable(scrollWidth > clientWidth);
+      }
+    };
+
+    checkScrollable();
+    window.addEventListener("resize", checkScrollable);
+    return () => window.removeEventListener("resize", checkScrollable);
+  }, [product?.images]); // ✅ Added optional chaining
 
   // Helper to detect if a string is a YouTube URL
   const isYouTubeUrl = (url: string) => {
@@ -146,91 +161,6 @@ export default function ProductDetailPage() {
         </div>
         {/* Top Section: Media Gallery and Product Details */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
-          {/* Left Column: Gallery */}
-          {/* <div className="lg:col-span-6 space-y-4">
-            <div className="relative border border-gray-200 rounded-sm overflow-hidden aspect-[4/3] flex items-center justify-center bg-white p-2">
-              {isYouTubeUrl(selectedMedia) ? (
-                <iframe
-                  className="w-full h-full"
-                  src={`https://www.youtube.com/embed/${getYouTubeEmbedId(selectedMedia)}`}
-                  title="Product Video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              ) : (
-                <img
-                  src={selectedMedia || "/placeholder-image.jpg"}
-                  alt={product.product_name}
-                  className="w-full h-full object-contain"
-                />
-              )}
-            </div>
-
-           
-            <div className="relative flex items-center gap-2">
-              <button
-                onClick={() => {
-                  const currentIndex = product.images.indexOf(selectedMedia);
-                  const prevIndex =
-                    currentIndex <= 0
-                      ? product.images.length - 1
-                      : currentIndex - 1;
-                  setSelectedMedia(product.images[prevIndex]);
-                }}
-                className="text-gray-600 hover:text-black p-1 text-xl font-bold"
-                aria-label="Previous image"
-              >
-                ‹
-              </button>
-
-              <div className="flex gap-4 overflow-x-auto py-1 scrollbar-none flex-1">
-                {product.images?.map((media: string, index: number) => {
-                  const isVideo = isYouTubeUrl(media);
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedMedia(media)}
-                      className={`w-28 h-24 flex-shrink-0 border rounded-sm overflow-hidden bg-white p-2 flex items-center justify-center transition-all ${
-                        selectedMedia === media
-                          ? "border-orange-500 ring-1 ring-orange-500"
-                          : "border-gray-200 hover:border-gray-400"
-                      }`}
-                    >
-                      {isVideo ? (
-                        <div className="relative w-full h-full bg-gray-900 flex items-center justify-center">
-                          <span className="text-[10px] font-bold text-white tracking-wide">
-                            VIDEO
-                          </span>
-                        </div>
-                      ) : (
-                        <img
-                          src={media}
-                          alt={`Thumbnail ${index}`}
-                          className="w-full h-full object-contain"
-                        />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <button
-                onClick={() => {
-                  const currentIndex = product.images.indexOf(selectedMedia);
-                  const nextIndex =
-                    currentIndex === product.images.length - 1
-                      ? 0
-                      : currentIndex + 1;
-                  setSelectedMedia(product.images[nextIndex]);
-                }}
-                className="text-gray-600 hover:text-black p-1 text-xl font-bold"
-                aria-label="Next image"
-              >
-                ›
-              </button>
-            </div>
-          </div> */}
-
           <div className="lg:col-span-6 space-y-4">
             {/* Main Image / Video Viewport */}
             <div className="relative border border-gray-200 rounded-sm overflow-hidden aspect-[4/3] flex items-center justify-center bg-white p-2">
@@ -253,8 +183,8 @@ export default function ProductDetailPage() {
 
             {/* Scrollable Thumbnails row with side navigation arrows */}
             <div className="relative flex items-center gap-2">
-              {/* Only show Previous button if there is more than 1 image */}
-              {product.images?.length > 1 && (
+              {/* Show Previous button ONLY if images > 1 AND it is actually scrollable */}
+              {isScrollable && product.images?.length > 1 && (
                 <button
                   onClick={() => {
                     const currentIndex = product.images.indexOf(selectedMedia);
@@ -271,9 +201,17 @@ export default function ProductDetailPage() {
                 </button>
               )}
 
-              {/* Added justify-center so thumbnail stays centered when items are few */}
-              <div className="flex gap-4 overflow-x-auto py-1 scrollbar-none flex-1 justify-center">
-                {product.images?.map((media: string, index: number) => {
+              {/* Attach the ref here so we can measure its width */}
+              <div
+                ref={scrollContainerRef}
+                className={`flex gap-4 overflow-x-auto py-3 scrollbar-none flex-1 ${
+                  isScrollable
+                    ? "justify-start"
+                    : "justify-start md:justify-center"
+                }`}
+              >
+                {//@ts-ignore
+                product.images?.map((media, index) => {
                   const isVideo = isYouTubeUrl(media);
                   const isSelected = selectedMedia === media;
 
@@ -283,7 +221,7 @@ export default function ProductDetailPage() {
                       //@ts-ignore
                       ref={(el) => (thumbnailRefs.current[index] = el)}
                       onClick={() => setSelectedMedia(media)}
-                      className={`w-28 h-24 flex-shrink-0 border rounded-sm overflow-hidden bg-white p-2 flex items-center justify-center transition-all ${
+                      className={`w-28 h-24 flex-shrink-0 border rounded-sm overflow-hidden bg-white p-2 flex items-center justify-center transition-all cursor-pointer ${
                         isSelected
                           ? "border-orange-500 ring-1 ring-orange-500"
                           : "border-gray-200 hover:border-gray-400"
@@ -307,8 +245,8 @@ export default function ProductDetailPage() {
                 })}
               </div>
 
-              {/* Only show Next button if there is more than 1 image */}
-              {product.images?.length > 1 && (
+              {/* Show Next button ONLY if images > 1 AND it is actually scrollable */}
+              {isScrollable && product.images?.length > 1 && (
                 <button
                   onClick={() => {
                     const currentIndex = product.images.indexOf(selectedMedia);
