@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 
 export default function AppHeader() {
   return (
-    <header className="w-full bg-[#1d0037] text-white font-sans select-none">
+    <header className="w-full bg-[rgb(31,12,87)] text-white font-sans select-none">
       {/* Top Utility Bar */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-2 flex justify-between items-center text-xs border-b border-purple-950/20">
+      <div className="w-full text-[12.5px] font-normal px-4 sm:px-6 lg:px-8 py-2 flex justify-between items-center text-xs border-b border-purple-950/20">
         {/* Left Side: Contact & Socials */}
         <div className="flex items-center space-x-4">
           <span className="text-gray-200">
@@ -15,13 +15,13 @@ export default function AppHeader() {
           <div className="flex items-center space-x-3">
             {/* Facebook Icon */}
             <a href="#" className="hover:text-orange-500 transition-colors">
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                 <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.8c4.56-.93 8-4.96 8-9.8z" />
               </svg>
             </a>
             {/* LinkedIn Icon */}
             <a href="#" className="hover:text-orange-500 transition-colors">
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                 <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
               </svg>
             </a>
@@ -43,51 +43,16 @@ export default function AppHeader() {
       </div>
 
       {/* Main Header Bar */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between gap-4">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between gap-4">
         {/* Brand Logo Component */}
         <Link
           to="/"
           className="flex items-center space-x-3 shrink-0 cursor-pointer group"
         >
-          {/* Isometric Layered Icon */}
-          <svg
-            className="w-16 h-12"
-            viewBox="0 0 100 80"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {/* Top Layer (Orange) */}
-            <path
-              d="M50 5 L85 22 L50 39 L15 22 Z"
-              stroke="#ff6a00"
-              strokeWidth="4"
-              fill="none"
-            />
-            <path d="M32 14 L68 32" stroke="#ff6a00" strokeWidth="2" />
-
-            {/* Middle Layer (Orange) */}
-            <path
-              d="M50 20 L85 37 L50 54 L15 37 Z"
-              stroke="#ff6a00"
-              strokeWidth="4"
-              fill="none"
-            />
-            <path d="M32 29 L68 47" stroke="#ff6a00" strokeWidth="2" />
-
-            {/* Bottom Layer (White) */}
-            <path
-              d="M50 35 L85 52 L50 69 L15 52 Z"
-              stroke="#ffffff"
-              strokeWidth="4"
-              fill="none"
-            />
-            <path d="M32 44 L68 62" stroke="#ffffff" strokeWidth="2" />
-          </svg>
-
-          {/* Typo: aef */}
-          <span className="text-5xl font-black tracking-tighter text-white lowercase font-sans">
-            aef
-          </span>
+          <img 
+          className="w-75 h-20"
+          src="https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/ee/eee7b1e0884389d021c57fba66742e13f506a591.png"
+          alt="" />
         </Link>
 
         {/* Search Bar Container */}

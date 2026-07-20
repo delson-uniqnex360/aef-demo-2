@@ -36,18 +36,18 @@ export default function MegaMenu() {
       .replace(/\s+/g, "-"); // Replace spaces with dashes
   };
 
+  // Triggers navigation on a hard click of the Main Category
   const handleMainClick = (category: MainCategory) => {
     const mainSlug = formatSlug(category.title);
     navigate(`/category/${mainSlug}`);
+    setActiveMain(null);
+    setActiveSub(null);
+  };
 
+  // NEW: Updates dropdown states dynamically when hovering over Level 1
+  const handleMainMouseEnter = (category: MainCategory) => {
     // Guard clause: If there are no subcategories, do not open the dropdown menu
     if (!category.subCategories || category.subCategories.length === 0) {
-      setActiveMain(null);
-      setActiveSub(null);
-      return;
-    }
-
-    if (activeMain?.id === category.id) {
       setActiveMain(null);
       setActiveSub(null);
       return;
@@ -66,11 +66,17 @@ export default function MegaMenu() {
     const mainSlug = formatSlug(mainCategory.title);
     const subSlug = formatSlug(subCategory.title);
     navigate(`/category/${mainSlug}/${subSlug}`);
+
+    setActiveMain(null);
+    setActiveSub(null);
   };
 
   const handleGroupClick = (groupTitle: string) => {
     const groupSlug = formatSlug(groupTitle);
     navigate(`/product/${groupSlug}`);
+
+    setActiveMain(null);
+    setActiveSub(null);
   };
 
   const handleBrandClick = (groupTitle: string, brandName: string) => {
@@ -91,11 +97,17 @@ export default function MegaMenu() {
   }
 
   return (
-    <div className="relative w-full z-50 select-none">
+    // Added an onMouseLeave wrapper layer to safely shut down the portal panel when leaving the menu footprint
+    <div
+      className="relative w-full z-50 select-none border-t border-black"
+      onMouseLeave={() => {
+        setActiveMain(null);
+        setActiveSub(null);
+      }}
+    >
       {/* Level 1 Navigation */}
-      <nav className="w-full bg-[#14002a] text-white px-4 py-3 border-b border-gray-200">
-        {/* Added arbitrary variants to hide the horizontal scrollbar cross-browser */}
-        <div className="max-w-[1600px] mx-auto flex items-center gap-8 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <nav className="w-full bg-[rgb(31,12,87)] text-white px-4 py-3 border-b border-gray-200">
+        <div className="max-w-[1600px] mx-auto text-[14px] font-normal flex items-center justify-evenly gap-8 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {menuData.map((mainCat) => {
             const isOpen = activeMain?.id === mainCat.id;
             const hasNoSubs =
@@ -104,9 +116,10 @@ export default function MegaMenu() {
             return (
               <button
                 key={mainCat.id}
+                onMouseEnter={() => handleMainMouseEnter(mainCat)}
                 onClick={() => handleMainClick(mainCat)}
                 disabled={hasNoSubs}
-                className={`flex items-center gap-2 whitespace-nowrap text-xs font-semibold border-b-2 py-1 transition-colors ${
+                className={`flex items-center gap-2 cursor-pointer whitespace-nowrap font-semibold border-b-2 py-1 transition-colors ${
                   hasNoSubs
                     ? "cursor-default opacity-70 border-transparent"
                     : isOpen
@@ -116,7 +129,6 @@ export default function MegaMenu() {
               >
                 <span>{mainCat.title}</span>
 
-                {/* Only render arrow if there are subcategories to display */}
                 {!hasNoSubs && (
                   <svg
                     className={`w-3 h-3 transition-transform ${
@@ -188,7 +200,7 @@ export default function MegaMenu() {
               <div key={index}>
                 <button
                   onClick={() => handleGroupClick(group.title)}
-                  className="font-bold text-sm border-b border-gray-200 pb-2 w-full text-left hover:text-[#ff6a00]"
+                  className="font-bold text-sm border-b cursor-pointer border-gray-200 pb-2 w-full text-left hover:text-[#ff6a00]"
                 >
                   {group.title}
                 </button>
@@ -198,7 +210,7 @@ export default function MegaMenu() {
                     <li key={i}>
                       <button
                         onClick={() => handleBrandClick(group.title, item.name)}
-                        className="text-xs text-gray-700 hover:text-[#ff6a00] text-left w-full"
+                        className="text-xs cursor-pointer text-gray-700 hover:text-[#ff6a00] text-left w-full"
                       >
                         &gt; {item.name}
                       </button>
@@ -211,15 +223,9 @@ export default function MegaMenu() {
         </div>
       )}
 
-      {/* Click-away Backdrop Layer */}
+      {/* Click-away Backdrop Layer (Maintained for accessibility fallback clicks) */}
       {activeMain && (
-        <div
-          className="fixed inset-0 bg-black/10 -z-10"
-          onClick={() => {
-            setActiveMain(null);
-            setActiveSub(null);
-          }}
-        />
+        <div className="fixed inset-0 bg-black/10 -z-10 pointer-events-none" />
       )}
     </div>
   );
