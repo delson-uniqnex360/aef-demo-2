@@ -51,7 +51,7 @@ export default function ProductPage() {
       });
   }, [categorySlug]);
 
-  console.log('product to display', productsToDisplay)
+  console.log("product to display", productsToDisplay);
 
   if (loading) {
     return (
@@ -63,7 +63,9 @@ export default function ProductPage() {
 
   return (
     <main className="max-w-[1200px] mx-auto px-4 py-8 bg-gray-50/50 min-h-screen font-sans antialiased">
-      <AppTaxonomy products={productsToDisplay} />
+      <div className="mt-8">
+        <AppTaxonomy products={productsToDisplay} />
+      </div>
 
       {/* 1. Dynamic Breadcrumbs */}
       <nav className="text-xs md:text-sm text-gray-500 mb-6 flex flex-wrap gap-1 items-center capitalize">

@@ -156,7 +156,7 @@ export default function ProductDetailPage() {
 
       <main className="max-w-[1200px] mx-auto px-4 py-8">
         {/* <div>Hello world</div> */}
-        <div className="mt-8">
+        <div className="mt-20">
           <AppTaxonomy products={[product]} />
         </div>
         {/* Top Section: Media Gallery and Product Details */}

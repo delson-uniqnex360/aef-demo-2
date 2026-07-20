@@ -189,7 +189,7 @@ export default function CategoryPage() {
   return (
     <section className="max-w-[1200px] mx-auto px-4 py-16 bg-white">
       {/* Dynamic Section Header */}
-      <div>
+      <div className="mt-8">
         <AppTaxonomy />
       </div>
       <div className="text-center mb-10">
