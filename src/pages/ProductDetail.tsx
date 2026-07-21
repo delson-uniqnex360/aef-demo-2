@@ -82,43 +82,6 @@ export default function ProductDetailPage() {
     return () => window.removeEventListener("resize", checkScrollable);
   }, [product?.images]); // ✅ Added optional chaining
 
-  // Helper to detect if a string is a YouTube URL
-  const isYouTubeUrl = (url: string) => {
-    return url
-      ? url.includes("youtube.com") || url.includes("youtu.be")
-      : false;
-  };
-
-  // Helper to extract clean embed ID from various YouTube formats
-  const getYouTubeEmbedId = (urlStr: string): string | null => {
-    try {
-      const url = new URL(urlStr);
-      const pathSegments = url.pathname.split("/").filter(Boolean);
-
-      // Handles youtu.be/VIDEO_ID
-      if (url.hostname.includes("youtu.be")) {
-        const id = pathSegments[0];
-        return id?.length === 11 ? id : null;
-      }
-
-      // Handles /shorts/VIDEO_ID, /embed/VIDEO_ID, /v/VIDEO_ID
-      if (["shorts", "embed", "v"].includes(pathSegments[0])) {
-        const id = pathSegments[1];
-        return id?.length === 11 ? id : null;
-      }
-
-      // Handles /watch?v=VIDEO_ID
-      const videoParam = url.searchParams.get("v");
-      if (videoParam && videoParam.length === 11) {
-        return videoParam;
-      }
-
-      return null;
-    } catch {
-      // Returns null gracefully if urlStr is an invalid URL string
-      return null;
-    }
-  };
 
   // 1. Loading State UI
   if (loading) {
@@ -193,14 +156,19 @@ export default function ProductDetailPage() {
           <div className="lg:col-span-6 space-y-4">
             {/* Main Image / Video Viewport */}
             <div className="relative border border-gray-200 rounded-sm overflow-hidden aspect-[4/3] flex items-center justify-center bg-white p-2">
-              {isYouTubeUrl(selectedMedia) ? (
-                <iframe
-                  className="w-full h-full"
-                  src={`https://www.youtube.com/embed/${getYouTubeEmbedId(selectedMedia)}`}
-                  title="Product Video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
+              {selectedMedia?.endsWith(".mp4") ||
+              selectedMedia?.includes("/video/upload/") ? (
+                <video
+                  key={selectedMedia}
+                  src={selectedMedia}
+                  controls
+                  autoPlay
+                  muted
+                  playsInline
+                  className="w-full h-full object-contain"
+                >
+                  Your browser does not support the video tag.
+                </video>
               ) : (
                 <img
                   src={selectedMedia || "/placeholder-image.jpg"}
@@ -230,7 +198,7 @@ export default function ProductDetailPage() {
                 </button>
               )}
 
-              {/* Attach the ref here so we can measure its width */}
+              {/* Scrollable Thumbnail Container */}
               <div
                 ref={scrollContainerRef}
                 className={`flex gap-4 overflow-x-auto py-3 scrollbar-none flex-1 ${
@@ -241,8 +209,15 @@ export default function ProductDetailPage() {
               >
                 {//@ts-ignore
                 product.images?.map((media, index) => {
-                  const isVideo = isYouTubeUrl(media);
+                  const isVideo =
+                    media?.endsWith(".mp4") ||
+                    media?.includes("/video/upload/");
                   const isSelected = selectedMedia === media;
+
+                  // Convert Cloudinary .mp4 link to a .jpg thumbnail frame dynamically
+                  const videoThumbnailUrl = isVideo
+                    ? media.replace(/\.[^/.]+$/, ".jpg")
+                    : media;
 
                   return (
                     <button
@@ -250,24 +225,32 @@ export default function ProductDetailPage() {
                       //@ts-ignore
                       ref={(el) => (thumbnailRefs.current[index] = el)}
                       onClick={() => setSelectedMedia(media)}
-                      className={`w-28 h-24 flex-shrink-0 border rounded-sm overflow-hidden bg-white p-2 flex items-center justify-center transition-all cursor-pointer ${
+                      className={`w-28 h-24 flex-shrink-0 border rounded-sm overflow-hidden bg-white p-2 flex items-center justify-center transition-all cursor-pointer relative ${
                         isSelected
                           ? "border-orange-500 ring-1 ring-orange-500"
                           : "border-gray-200 hover:border-gray-400"
                       }`}
                     >
-                      {isVideo ? (
-                        <div className="relative w-full h-full bg-gray-900 flex items-center justify-center">
-                          <span className="text-[10px] font-bold text-white tracking-wide">
-                            VIDEO
-                          </span>
+                      {/* Thumbnail Image (Works for both images and Cloudinary video poster frames) */}
+                      <img
+                        src={videoThumbnailUrl}
+                        alt={`Thumbnail ${index}`}
+                        className="w-full h-full object-contain"
+                      />
+
+                      {/* Play Button Overlay for Videos */}
+                      {isVideo && (
+                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                          <div className="w-7 h-7 bg-black/60 rounded-full flex items-center justify-center">
+                            <svg
+                              className="w-4 h-4 text-white translate-x-[1px]"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
                         </div>
-                      ) : (
-                        <img
-                          src={media}
-                          alt={`Thumbnail ${index}`}
-                          className="w-full h-full object-contain"
-                        />
                       )}
                     </button>
                   );
