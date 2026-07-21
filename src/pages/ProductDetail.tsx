@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { getProductBySku } from "../api/productDetail";
 import AppTaxonomy from "../components/AppTaxonomy";
+import AppTaxonomyV2 from "../components/AppTaxonomyv2";
 
 import {
   FaXTwitter,
@@ -157,8 +158,13 @@ export default function ProductDetailPage() {
       <main className="max-w-[1200px] mx-auto px-4 py-8">
         {/* <div>Hello world</div> */}
         <div className="mt-20">
-          <AppTaxonomy products={[product]} />
+          {sku === "0103152038" ? (
+            <AppTaxonomyV2 products={[product]} />
+          ) : (
+            <AppTaxonomy products={[product]} />
+          )}
         </div>
+
         {/* Top Section: Media Gallery and Product Details */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
           <div className="lg:col-span-6 space-y-4">
@@ -349,6 +355,24 @@ export default function ProductDetailPage() {
 
           {/* Sequential Display of Description, Tech Specs, & Documents */}
           <div className="p-6 md:p-8 space-y-8 text-gray-800 text-sm leading-relaxed">
+            {sku === "0103152038" && (
+              <>
+              <div className="py-4">
+                <div className="inline-block text-[#1F0C57] text-[25px] ">
+                  {product.brand} {product.sku}
+                </div>
+
+                <div className=" text-[#1F0C57] text-[25px]">
+                  {product.product_name}
+                </div>
+
+                <div className=" text-[#1F0C57] text-[25px]">
+                  Product Description
+                </div>
+                </div>
+              </>
+            )}
+
             {product.content && (
               <div className="space-y-3">
                 <div
@@ -369,6 +393,9 @@ export default function ProductDetailPage() {
                 >
                   Technical Information:
                 </h5>
+                {sku === "0103152038" && (
+                  <h2 className="font-bold text-[16px]">Characteristics</h2>
+                )}
                 <div
                   className="[&_*]:[all:revert] text-[16px] font-normal text-[rgb(51,51,51)]"
                   dangerouslySetInnerHTML={{ __html: product.tech_spec }}
