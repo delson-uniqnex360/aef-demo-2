@@ -90,11 +90,34 @@ export default function ProductDetailPage() {
   };
 
   // Helper to extract clean embed ID from various YouTube formats
-  const getYouTubeEmbedId = (url: string) => {
-    const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    return match && match[2].length === 11 ? match[2] : null;
+  const getYouTubeEmbedId = (urlStr: string): string | null => {
+    try {
+      const url = new URL(urlStr);
+      const pathSegments = url.pathname.split("/").filter(Boolean);
+
+      // Handles youtu.be/VIDEO_ID
+      if (url.hostname.includes("youtu.be")) {
+        const id = pathSegments[0];
+        return id?.length === 11 ? id : null;
+      }
+
+      // Handles /shorts/VIDEO_ID, /embed/VIDEO_ID, /v/VIDEO_ID
+      if (["shorts", "embed", "v"].includes(pathSegments[0])) {
+        const id = pathSegments[1];
+        return id?.length === 11 ? id : null;
+      }
+
+      // Handles /watch?v=VIDEO_ID
+      const videoParam = url.searchParams.get("v");
+      if (videoParam && videoParam.length === 11) {
+        return videoParam;
+      }
+
+      return null;
+    } catch {
+      // Returns null gracefully if urlStr is an invalid URL string
+      return null;
+    }
   };
 
   // 1. Loading State UI
@@ -357,18 +380,18 @@ export default function ProductDetailPage() {
           <div className="p-6 md:p-8 space-y-8 text-gray-800 text-sm leading-relaxed">
             {sku === "0103152038" && (
               <>
-              <div className="py-4">
-                <div className="inline-block text-[#1F0C57] text-[25px] ">
-                  {product.brand} {product.sku}
-                </div>
+                <div className="py-4">
+                  <div className="inline-block text-[#1F0C57] text-[25px] ">
+                    {product.brand} {product.sku}
+                  </div>
 
-                <div className=" text-[#1F0C57] text-[25px]">
-                  {product.product_name}
-                </div>
+                  <div className=" text-[#1F0C57] text-[25px]">
+                    {product.product_name}
+                  </div>
 
-                <div className=" text-[#1F0C57] text-[25px]">
-                  Product Description
-                </div>
+                  <div className=" text-[#1F0C57] text-[25px]">
+                    Product Description
+                  </div>
                 </div>
               </>
             )}
