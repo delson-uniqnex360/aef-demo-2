@@ -33,10 +33,13 @@ const AppTaxonomy = ({ products = [] }: Props) => {
 
   const isProductDetailPage = location.pathname.startsWith("/product/detail/");
 
-  // /product/:categorySlug
+  // Match category on /product/:categorySlug
   if (isProductPage && categorySlug && products.length) {
-    const product = products.find(
-      (p) => p.categories?.[2] === decodeURIComponent(categorySlug),
+    const targetSlug = decodeURIComponent(categorySlug).toLowerCase();
+
+    // Matches slug flexibly against level 1, 2, or 3 categories
+    const product = products.find((p) =>
+      p.categories?.some((cat) => formatSlug(cat) === targetSlug),
     );
 
     if (product) {
@@ -46,7 +49,7 @@ const AppTaxonomy = ({ products = [] }: Props) => {
     }
   }
 
-  // /product/detail/:sku
+  // Match product on /product/detail/:sku
   if (isProductDetailPage && sku && products.length) {
     const product = products.find((p) => p.sku === sku);
 
@@ -67,17 +70,18 @@ const AppTaxonomy = ({ products = [] }: Props) => {
 
       {levels.map((level, index) => {
         const isLast = index === levels.length - 1;
-
         const slug = formatSlug(level);
 
         let href = "/";
 
         if (index === 0) {
+          // Level 1 -> Category landing
           href = `/category/${slug}`;
         } else if (index === 1) {
+          // Level 2 -> Subcategory landing
           href = `/category/${formatSlug(levels[0])}/${slug}`;
         } else {
-          // Level 3
+          // Level 3 -> Product list or sub-category
           href =
             isProductPage || isProductDetailPage
               ? `/product/${slug}`
@@ -85,7 +89,7 @@ const AppTaxonomy = ({ products = [] }: Props) => {
         }
 
         return (
-          <div key={level} className="flex items-center gap-2">
+          <div key={`${level}-${index}`} className="flex items-center gap-2">
             <span>&gt;</span>
 
             <Link

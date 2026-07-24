@@ -51,7 +51,6 @@ export default function ProductPage() {
       });
   }, [categorySlug]);
 
-
   if (loading) {
     return (
       <div className="max-w-[1200px] mx-auto px-4 py-16 text-center text-sm font-semibold text-gray-400 animate-pulse">
@@ -67,6 +66,7 @@ export default function ProductPage() {
       </div>
 
       {/* 1. Dynamic Breadcrumbs */}
+      {/* Dynamic Breadcrumbs Nav in ProductPage.tsx */}
       <nav className="text-xs md:text-sm text-gray-500 mb-6 flex flex-wrap gap-1 items-center capitalize">
         <Link
           to="/"
@@ -76,6 +76,17 @@ export default function ProductPage() {
         </Link>
         {breadcrumbs.map((crumb, idx) => {
           const isLast = idx === breadcrumbs.length - 1;
+
+          // Dynamically calculate category route per index
+          let href = "/";
+          if (idx === 0) {
+            href = `/category/${formatSlug(crumb)}`;
+          } else if (idx === 1) {
+            href = `/category/${formatSlug(breadcrumbs[0])}/${formatSlug(crumb)}`;
+          } else {
+            href = `/product/${formatSlug(crumb)}`;
+          }
+
           return (
             <div key={idx} className="flex items-center gap-1">
               <span className="text-gray-300 px-1">/</span>
@@ -83,7 +94,7 @@ export default function ProductPage() {
                 <span className="text-gray-800 font-semibold">{crumb}</span>
               ) : (
                 <Link
-                  to={`/product/${formatSlug(crumb)}`}
+                  to={href}
                   className="hover:text-orange-600 transition-colors"
                 >
                   {crumb}

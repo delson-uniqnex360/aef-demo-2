@@ -87,7 +87,7 @@ import type { MainCategory } from "../types/Product";
 
 /**
  * Scans a MainCategory tree. Searches for a slug matching Level 1, 2, or 3,
- * and returns the full product objects (including SKU, name, etc.) from the main database.
+ * and returns the full product objects (including SKU, name, categories, etc.) from the main database.
  */
 export function getProductsByFlexLevel(
   tree: MainCategory[],
@@ -95,8 +95,6 @@ export function getProductsByFlexLevel(
   categorySlug?: string,
   allProducts: any[] = [],
 ): { products: any[]; breadcrumbs: string[]; title: string } {
-
-
   if (!categorySlug || !tree || tree.length === 0) {
     return {
       products: [],
@@ -107,58 +105,51 @@ export function getProductsByFlexLevel(
 
   /**
    * Replace lightweight category items with full DB products.
+   * Matches primarily on SKU (case-insensitive), with a fallback to ID if present.
    */
   const enrichProducts = (categoryItems: any[]) => {
+    if (!allProducts || allProducts.length === 0) {
+      return categoryItems;
+    }
 
+    return categoryItems.map((item) => {
+      const itemKey = (item.sku || item.id || "")
+        .toString()
+        .trim()
+        .toLowerCase();
 
-    const seenIds = new Set();
-
-    const enriched = categoryItems.map((item) => {
-
-
-      if (seenIds.has(item.id)) {
-        console.warn("⚠ Duplicate category item id:", item.id);
-      }
-      seenIds.add(item.id);
-
-      const matches = allProducts.filter((p) => p.id === item.id);
-
-
-      if (matches.length > 1) {
-        console.warn("⚠ Multiple database products have the same id!", matches);
+      if (!itemKey) {
+        return item;
       }
 
-      if (matches.length === 0) {
-        console.warn("⚠ Product not found in database, using category item.");
+      // Find full product match in database by SKU (or id fallback)
+      const fullProduct = allProducts.find((p) => {
+        const pSku = (p.sku || "").toString().trim().toLowerCase();
+        const pId = (p.id || "").toString().trim().toLowerCase();
+
+        return (pSku && pSku === itemKey) || (pId && pId === itemKey);
+      });
+
+      if (!fullProduct) {
+        console.warn(
+          `⚠ Product not found in database for SKU/ID: "${itemKey}". Using category item.`,
+        );
       }
 
-      return matches[0] ?? item;
+      // Merge item data with full DB product (DB properties take precedence, including categories)
+      return fullProduct ? { ...item, ...fullProduct } : item;
     });
-
-
-    return enriched;
   };
 
   // =====================================================
-  // LEVEL 1
+  // LEVEL 1: Main Category
   // =====================================================
-
-
-
-  const targetL1 = tree.find((c) => {
-    const slug = formatSlug(c.title);
-    return slug === categorySlug;
-  });
+  const targetL1 = tree.find((c) => formatSlug(c.title) === categorySlug);
 
   if (targetL1) {
-
     const items = (targetL1.subCategories || []).flatMap((s) => {
-
-      return (s.groups || []).flatMap((g) => {
-        return g.items || [];
-      });
+      return (s.groups || []).flatMap((g) => g.items || []);
     });
-
 
     return {
       products: enrichProducts(items),
@@ -168,25 +159,15 @@ export function getProductsByFlexLevel(
   }
 
   // =====================================================
-  // LEVEL 2
+  // LEVEL 2: Sub-Category
   // =====================================================
-
-
   for (const l1 of tree) {
-
-    const targetL2 = l1.subCategories?.find((s) => {
-      const slug = formatSlug(s.title);
-
-
-      return slug === categorySlug;
-    });
+    const targetL2 = l1.subCategories?.find(
+      (s) => formatSlug(s.title) === categorySlug,
+    );
 
     if (targetL2) {
-
-      const items = (targetL2.groups || []).flatMap((g) => {
-        return g.items || [];
-      });
-
+      const items = (targetL2.groups || []).flatMap((g) => g.items || []);
 
       return {
         products: enrichProducts(items),
@@ -197,25 +178,15 @@ export function getProductsByFlexLevel(
   }
 
   // =====================================================
-  // LEVEL 3
+  // LEVEL 3: Leaf Group
   // =====================================================
-
   for (const l1 of tree) {
-
     for (const l2 of l1.subCategories || []) {
-
-      const targetL3 = l2.groups?.find((g) => {
-        const slug = formatSlug(g.title);
-
-
-        return slug === categorySlug;
-      });
+      const targetL3 = l2.groups?.find(
+        (g) => formatSlug(g.title) === categorySlug,
+      );
 
       if (targetL3) {
-
-
-        console.table(targetL3.items);
-
         return {
           products: enrichProducts(targetL3.items || []),
           breadcrumbs: [l1.title, l2.title, targetL3.title],
