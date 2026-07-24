@@ -23,15 +23,12 @@ export async function getProductBySku(
 
     const targetSku = String(sku).trim().toLowerCase();
 
-    console.log("db", db, targetSku)
-    console.log("target sku", targetSku)
 
     const product =
       db.data.find(
         (item) => String(item.sku).trim().toLowerCase() === targetSku,
       ) ?? null;
 
-      console.log("product detail", product)
     return product;
   } catch (error) {
     console.error("Error loading product:", error);

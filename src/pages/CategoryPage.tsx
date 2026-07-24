@@ -22,7 +22,6 @@ export default function CategoryPage() {
       .then((rawData) => {
         const products = Array.isArray(rawData) ? rawData : rawData.data;
         const tree = buildCategoryTree(products ?? []);
-        console.log("DEBUG: Category Tree Built Successfully ->", tree);
         setCategoriesTree(tree);
         setLoading(false);
       })
@@ -42,8 +41,6 @@ export default function CategoryPage() {
 
   // Change 3 & Bug Fix: Pointing to raw data structure (.images array)
   const getDynamicCategoryImage = (obj: any): string => {
-    console.log("ctaegory obj",obj)
-    console.log("image obj", obj);
     const fallbackImage =
       "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=500&auto=format&fit=crop";
 
@@ -82,12 +79,7 @@ export default function CategoryPage() {
     return fallbackImage;
   };
 
-  // Log URL parameters every render to see exactly what React Router captures
-  console.log("DEBUG: Current Route Params Captured ->", {
-    level1,
-    level2,
-    level3,
-  });
+
 
   // 4. Logic block to drill down and handle Level Redirects / Children listing
   let currentTitle = "Categories";
@@ -102,18 +94,14 @@ export default function CategoryPage() {
 
   if (!loading && categoriesTree.length > 0) {
     if (level3 && level3.trim() !== "") {
-      console.log(
-        `DEBUG: Triggering Redirect Condition! level3 is active: "${level3}". Navigating to /product/${level3}`,
-      );
+
 
       setTimeout(() => {
         navigate(`/product/${level3}`);
       }, 0);
       return null;
     } else if (level2 && level2.trim() !== "") {
-      console.log(
-        `DEBUG: Condition Level 2 active. level1: "${level1}", level2: "${level2}". Searching for Level 3 groups...`,
-      );
+
 
       const parentL1 = categoriesTree.find(
         (c) => formatSlug(c.title) === level1,
@@ -122,10 +110,6 @@ export default function CategoryPage() {
         (sub) => formatSlug(sub.title) === level2,
       );
 
-      console.log("DEBUG: Level 2 Parent Lookup Result ->", {
-        parentL1,
-        parentL2,
-      });
 
       if (parentL2) {
         currentTitle = parentL2.title;
@@ -139,14 +123,11 @@ export default function CategoryPage() {
         }));
       }
     } else if (level1 && level1.trim() !== "") {
-      console.log(
-        `DEBUG: Condition Level 1 active. level1: "${level1}". Searching for Level 2 subcategories...`,
-      );
+
 
       const parentL1 = categoriesTree.find(
         (c) => formatSlug(c.title) === level1,
       );
-      console.log("DEBUG: Level 1 Parent Lookup Result ->", parentL1);
 
       if (parentL1) {
         currentTitle = parentL1.title;
@@ -157,16 +138,13 @@ export default function CategoryPage() {
           targetUrl: `/category/${level1}/${formatSlug(sub.title)}`,
           data: sub,
         }));
-        console.log(
-          `DEBUG: Mapped ${itemsToDisplay.length} Level 2 subcategories to display.`,
-        );
+
       } else {
         console.warn(
           `DEBUG WARNING: Could not find matching level1 category in tree for slug: "${level1}"`,
         );
       }
     } else {
-      console.log("DEBUG: No parameters match. Listing all main categories...");
       currentTitle = "All Categories";
       // Change 1 (Level 0): Retaining original node mapping onto 'data'
       itemsToDisplay = categoriesTree.map((c) => ({

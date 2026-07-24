@@ -95,14 +95,9 @@ export function getProductsByFlexLevel(
   categorySlug?: string,
   allProducts: any[] = [],
 ): { products: any[]; breadcrumbs: string[]; title: string } {
-  console.log("========================================");
-  console.log("getProductsByFlexLevel()");
-  console.log("Searching slug:", categorySlug);
-  console.log("Tree main categories:", tree.length);
-  console.log("Database products:", allProducts.length);
+
 
   if (!categorySlug || !tree || tree.length === 0) {
-    console.log("No category slug or empty tree.");
     return {
       products: [],
       breadcrumbs: [],
@@ -114,16 +109,12 @@ export function getProductsByFlexLevel(
    * Replace lightweight category items with full DB products.
    */
   const enrichProducts = (categoryItems: any[]) => {
-    console.log("----------------------------------------");
-    console.log("Enriching products...");
-    console.log("Category items count:", categoryItems.length);
+
 
     const seenIds = new Set();
 
-    const enriched = categoryItems.map((item, index) => {
-      console.log("");
-      console.log(`Item ${index + 1}`);
-      console.log("Category Item:", item);
+    const enriched = categoryItems.map((item) => {
+
 
       if (seenIds.has(item.id)) {
         console.warn("⚠ Duplicate category item id:", item.id);
@@ -132,7 +123,6 @@ export function getProductsByFlexLevel(
 
       const matches = allProducts.filter((p) => p.id === item.id);
 
-      console.log(`Database matches for id=${item.id}:`, matches.length);
 
       if (matches.length > 1) {
         console.warn("⚠ Multiple database products have the same id!", matches);
@@ -145,9 +135,6 @@ export function getProductsByFlexLevel(
       return matches[0] ?? item;
     });
 
-    console.log("----------------------------------------");
-    console.log("Final enriched product count:", enriched.length);
-    console.log("Final products:", enriched);
 
     return enriched;
   };
@@ -156,28 +143,22 @@ export function getProductsByFlexLevel(
   // LEVEL 1
   // =====================================================
 
-  console.log("");
-  console.log("Checking Level 1...");
+
 
   const targetL1 = tree.find((c) => {
     const slug = formatSlug(c.title);
-    console.log(`Compare L1: "${slug}" === "${categorySlug}"`);
     return slug === categorySlug;
   });
 
   if (targetL1) {
-    console.log("✅ Matched Level 1:", targetL1.title);
 
     const items = (targetL1.subCategories || []).flatMap((s) => {
-      console.log(`SubCategory "${s.title}" groups:`, s.groups?.length ?? 0);
 
       return (s.groups || []).flatMap((g) => {
-        console.log(`  Group "${g.title}" items:`, g.items?.length ?? 0);
         return g.items || [];
       });
     });
 
-    console.log("Collected items:", items.length);
 
     return {
       products: enrichProducts(items),
@@ -190,29 +171,22 @@ export function getProductsByFlexLevel(
   // LEVEL 2
   // =====================================================
 
-  console.log("");
-  console.log("Checking Level 2...");
 
   for (const l1 of tree) {
-    console.log("Inside L1:", l1.title);
 
     const targetL2 = l1.subCategories?.find((s) => {
       const slug = formatSlug(s.title);
 
-      console.log(`Compare L2: "${slug}" === "${categorySlug}"`);
 
       return slug === categorySlug;
     });
 
     if (targetL2) {
-      console.log("✅ Matched Level 2:", targetL2.title);
 
       const items = (targetL2.groups || []).flatMap((g) => {
-        console.log(`Group "${g.title}" items:`, g.items?.length ?? 0);
         return g.items || [];
       });
 
-      console.log("Collected items:", items.length);
 
       return {
         products: enrichProducts(items),
@@ -226,27 +200,19 @@ export function getProductsByFlexLevel(
   // LEVEL 3
   // =====================================================
 
-  console.log("");
-  console.log("Checking Level 3...");
-
   for (const l1 of tree) {
-    console.log("L1:", l1.title);
 
     for (const l2 of l1.subCategories || []) {
-      console.log("  L2:", l2.title);
 
       const targetL3 = l2.groups?.find((g) => {
         const slug = formatSlug(g.title);
 
-        console.log(`Compare L3: "${slug}" === "${categorySlug}"`);
 
         return slug === categorySlug;
       });
 
       if (targetL3) {
-        console.log("✅ Matched Level 3:", targetL3.title);
 
-        console.log("Items inside group:", targetL3.items?.length ?? 0);
 
         console.table(targetL3.items);
 

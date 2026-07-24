@@ -51,7 +51,6 @@ export default function ProductPage() {
       });
   }, [categorySlug]);
 
-  console.log("product to display", productsToDisplay);
 
   if (loading) {
     return (
