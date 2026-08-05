@@ -401,9 +401,12 @@ export default function ProductDetailPage() {
                 >
                   Technical Information:
                 </h5>
-                {sku === "0103152038" && (
-                  <h2 className="font-bold text-[16px]">Characteristics</h2>
-                )}
+                {
+                  //@ts-ignore
+                  ["0103152038", "AWA06060", "3037"].includes(sku) && (
+                    <h2 className="font-bold text-[16px]">Characteristics</h2>
+                  )
+                }
                 <div
                   className="[&_*]:[all:revert] text-[16px] font-normal text-[rgb(51,51,51)]"
                   dangerouslySetInnerHTML={{ __html: product.tech_spec }}
