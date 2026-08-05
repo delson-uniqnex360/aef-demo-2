@@ -369,9 +369,13 @@ export default function ProductDetailPage() {
                       {product.product_sub_title || ""}
                     </div>
 
-                    <div className=" text-[#1F0C57] text-[25px]">
-                      {product.product_h3_title || product.product_name}
-                    </div>
+                    <div
+                      className="text-[#1F0C57] text-[25px]"
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          product.product_h3_title || product.product_name,
+                      }}
+                    />
 
                     <div className=" text-[#1F0C57] text-[25px]">
                       Product Description
