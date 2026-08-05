@@ -359,14 +359,14 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Sequential Display of Description, Tech Specs, & Documents */}
-          <div className="p-6 md:p-8 space-y-8 text-gray-800 text-sm leading-relaxed">
+          <div className="p-6 md:p-8 space-y-2 text-gray-800 text-sm leading-relaxed">
             {
               //@ts-ignore
               ["0103152038", "AWA06060", "3037"].includes(sku) && (
                 <>
-                  <div className="py-4">
+                  <div className="py-2">
                     <div className="inline-block text-[#1F0C57] text-[25px] ">
-                      {product.product_sub_title}
+                      {product.product_sub_title || ""}
                     </div>
 
                     <div className=" text-[#1F0C57] text-[25px]">
@@ -382,7 +382,7 @@ export default function ProductDetailPage() {
             }
 
             {product.content && (
-              <div className="space-y-3">
+              <div className="">
                 <div
                   className="[&_*]:[all:revert] text-[16px]"
                   dangerouslySetInnerHTML={{ __html: product.content }}
@@ -391,7 +391,7 @@ export default function ProductDetailPage() {
             )}
 
             {product.tech_spec && (
-              <div className="space-y-3 pt-4 border-t border-gray-100">
+              <div className="space-y-3  border-t border-gray-100">
                 <h5
                   style={{
                     fontSize: "22.4px",
