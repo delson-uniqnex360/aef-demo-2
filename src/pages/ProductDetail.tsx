@@ -82,7 +82,6 @@ export default function ProductDetailPage() {
     return () => window.removeEventListener("resize", checkScrollable);
   }, [product?.images]); // ✅ Added optional chaining
 
-
   // 1. Loading State UI
   if (loading) {
     return (
@@ -361,23 +360,26 @@ export default function ProductDetailPage() {
 
           {/* Sequential Display of Description, Tech Specs, & Documents */}
           <div className="p-6 md:p-8 space-y-8 text-gray-800 text-sm leading-relaxed">
-            {sku === "0103152038" && (
-              <>
-                <div className="py-4">
-                  <div className="inline-block text-[#1F0C57] text-[25px] ">
-                    {product.brand} {product.sku}
-                  </div>
+            {
+              //@ts-ignore
+              ["0103152038", "AWA06060", "3037"].includes(sku) && (
+                <>
+                  <div className="py-4">
+                    <div className="inline-block text-[#1F0C57] text-[25px] ">
+                      {product.product_sub_title}
+                    </div>
 
-                  <div className=" text-[#1F0C57] text-[25px]">
-                    {product.product_name}
-                  </div>
+                    <div className=" text-[#1F0C57] text-[25px]">
+                      {product.product_h3_title || product.product_name}
+                    </div>
 
-                  <div className=" text-[#1F0C57] text-[25px]">
-                    Product Description
+                    <div className=" text-[#1F0C57] text-[25px]">
+                      Product Description
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )
+            }
 
             {product.content && (
               <div className="space-y-3">
