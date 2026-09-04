@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { getProductBySku } from "../api/productDetail";
 import AppTaxonomy from "../components/AppTaxonomy";
@@ -26,6 +26,13 @@ const shareIcons = [
 export default function ProductDetailPage() {
   const { sku } = useParams<{ sku: string }>();
 
+  // Variant selection is optional: read/write a `variant` query param
+  // (e.g. ?variant=93310120A2) so the selected variant is shareable and
+  // known up-front on load. Products with no `variants` field are
+  // completely unaffected by any of this.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const variantCodeFromUrl = searchParams.get("variant") || undefined;
+
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const scrollContainerRef = useRef(null);
 
@@ -35,17 +42,29 @@ export default function ProductDetailPage() {
   const [selectedMedia, setSelectedMedia] = useState("");
   const [isScrollable, setIsScrollable] = useState(false);
 
+
+  console.log("product", product)
+
+  // Tracks which variant code is currently active, independent of the URL
+  // sync above, so the UI can highlight the right option immediately.
+  const [selectedVariantCode, setSelectedVariantCode] = useState<
+    string | undefined
+  >(variantCodeFromUrl);
+
   // Handle async product fetching
   useEffect(() => {
     async function loadProduct() {
       setLoading(true);
-      const result = await getProductBySku(sku);
+      // If a variant is requested via URL, prefer fetching that variant's
+      // own SKU/code; otherwise fall back to the base product sku as before.
+      const result = await getProductBySku(variantCodeFromUrl || sku);
       setProduct(result);
       setLoading(false);
     }
 
     loadProduct();
-  }, [sku]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sku, variantCodeFromUrl]);
 
   // Sync selectedMedia once product data is loaded or changes
   useEffect(() => {
@@ -81,6 +100,23 @@ export default function ProductDetailPage() {
     window.addEventListener("resize", checkScrollable);
     return () => window.removeEventListener("resize", checkScrollable);
   }, [product?.images]); // ✅ Added optional chaining
+
+  // Keep local selectedVariantCode in sync whenever the URL param or the
+  // loaded product changes (e.g. back/forward navigation, direct link).
+  useEffect(() => {
+    setSelectedVariantCode(variantCodeFromUrl);
+  }, [variantCodeFromUrl]);
+
+  // Updates the `variant` URL param and local state when the user picks a
+  // different variant option. Fully optional — only called from variant UI.
+  const handleVariantSelect = (code: string) => {
+    setSelectedVariantCode(code);
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("variant", code);
+      return next;
+    });
+  };
 
   // 1. Loading State UI
   if (loading) {
@@ -320,6 +356,48 @@ export default function ProductDetailPage() {
                 In Stock
               </span>
             </div>
+
+            {/* Variant Selector — fully optional. Only renders when the
+                product has a `variants` object (e.g. { meterial: [...] }).
+                Each group renders as its own row of pill buttons; the
+                currently selected code (from the URL, or defaulted to the
+                first option) is highlighted. */}
+            {product.variants && Object.keys(product.variants).length > 0 && (
+              <div className="space-y-3 pt-2">
+                {Object.entries(product.variants).map(
+                  ([groupName, options]: [string, any]) => (
+                    <div key={groupName}>
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                        {groupName}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {options?.map((variant: any) => {
+                          const isActive = selectedVariantCode
+                            ? selectedVariantCode === variant.code
+                            : variant.code === sku; // default highlight: base product's own sku, if it matches
+
+                          return (
+                            <button
+                              key={variant.code}
+                              type="button"
+                              onClick={() => handleVariantSelect(variant.code)}
+                              title={variant.name}
+                              className={`px-3 py-1.5 rounded-sm border text-sm font-medium transition ${
+                                isActive
+                                  ? "border-orange-500 bg-orange-50 text-orange-700"
+                                  : "border-gray-300 text-gray-700 hover:border-gray-400"
+                              }`}
+                            >
+                              {variant.option}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ),
+                )}
+              </div>
+            )}
 
             {/* Quantity Input & Add to Cart */}
             <div className="flex gap-2 max-w-sm pt-2">

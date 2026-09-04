@@ -4,6 +4,12 @@ export type ProductAttribute = {
   uom: string | null;
 };
 
+export type Variant = {
+  code: string;
+  name: string;
+  option: string;
+};
+
 export type Product = {
   sku: string;
   product_name: string;
@@ -18,13 +24,15 @@ export type Product = {
   currency: string;
 
   images: string[];
-  category_image?:string;
+  category_image?: string;
 
   long_description: string;
 
   features: string[];
 
   attributes: ProductAttribute[];
+
+  variants: Record<string, Variant[]> | null;
 };
 
 // FIX: MenuItem must contain the SKU or extend Product for the search to work

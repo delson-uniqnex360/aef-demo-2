@@ -498,6 +498,51 @@
       ]
     },
     {
+      "id": 16,
+      "sku": "93310120",
+      "product_name": "Hex Head Set Screw M10 x 120mm Din 933",
+      "product_sub_title": "Hex Head Set Screw M10 x 120mm Din 933",
+      "brand": "",
+      "mpn": "93310120",
+      "categories": ["Fasteners & Fixings", "Fasteners", "Hex Sets"],
+      "taxonomy": "Fasteners & Fixings > Fasteners > Hex Sets",
+      "content": "<div>93310120 Hex Head Set Screw M10 x 120mm Din 933</div>",
+      "tech_spec": "",
+      "meta_keywords": "hex, head, set, screw, m10, 120mm, din, 933",
+      "meta_description": "AEF Ltd stockist of Engineering Supplies and Consumables in Ireland. See our wide range of Tools in stock. Order today.",
+      "status": "visible",
+      "price": "451.09",
+      "currency": "EUR",
+      "variants": {
+        "meterial": [
+          {
+            "code": "93310120A2",
+            "name": "93310120 Hex Head Set Screw M10 x 120mm Din 933 A2",
+            "option": "A2"
+          },
+          {
+            "code": "93310120A4",
+            "name": "93310120 Hex Head Set Screw M10 x 120mm Din 933 A4",
+            "option": "A4"
+          },
+          {
+            "code": "93310120G",
+            "name": "93310120 Hex Head Set Screw M10 x 120mm Din 933 Galv",
+            "option": "Galv"
+          },
+          {
+            "code": "93310120Z",
+            "name": "93310120 Hex Head Set Screw M10 x 120mm Din 933 Z/P",
+            "option": "Z/P"
+          }
+        ]
+      },
+      "images": [
+        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/c5/c569be36890e9ef5521152fd848a01c20b5b4af5.jpg"
+      ],
+      "documents": []
+    },
+    {
       "categories": ["Workshop Maintenance & Safety"],
       "category_image": "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/06/06f913027db7e16096abf9f39737b546774abd34.png"
     }
