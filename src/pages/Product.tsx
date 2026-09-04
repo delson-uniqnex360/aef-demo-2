@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { buildCategoryTreeV2 } from "../api/category";
 import { getProductsByFlexLevel } from "../api/product";
-import AppTaxonomy from "../components/AppTaxonomy";
 
 export default function ProductPage() {
   const { categorySlug } = useParams<{ categorySlug: string }>();
