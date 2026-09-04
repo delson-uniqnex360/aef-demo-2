@@ -26,44 +26,50 @@ const shareIcons = [
 export default function ProductDetailPage() {
   const { sku } = useParams<{ sku: string }>();
 
-  // Variant selection is optional: read/write a `variant` query param
-  // (e.g. ?variant=93310120A2) so the selected variant is shareable and
-  // known up-front on load. Products with no `variants` field are
-  // completely unaffected by any of this.
   const [searchParams, setSearchParams] = useSearchParams();
   const variantCodeFromUrl = searchParams.get("variant") || undefined;
 
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const scrollContainerRef = useRef(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Asynchronous product states
   const [product, setProduct] = useState<any>(null);
+  const [baseProduct, setBaseProduct] = useState<any>(null); // Preserves base taxonomy data
   const [loading, setLoading] = useState(true);
   const [selectedMedia, setSelectedMedia] = useState("");
   const [isScrollable, setIsScrollable] = useState(false);
 
-
-  console.log("product", product)
-
-  // Tracks which variant code is currently active, independent of the URL
-  // sync above, so the UI can highlight the right option immediately.
+  // Tracks active variant code
   const [selectedVariantCode, setSelectedVariantCode] = useState<
     string | undefined
   >(variantCodeFromUrl);
 
-  // Handle async product fetching
+  // Fetch product data: always fetch base product for taxonomy, plus variant data if specified
   useEffect(() => {
-    async function loadProduct() {
+    async function loadProductData() {
+      if (!sku) return;
       setLoading(true);
-      // If a variant is requested via URL, prefer fetching that variant's
-      // own SKU/code; otherwise fall back to the base product sku as before.
-      const result = await getProductBySku(variantCodeFromUrl || sku);
-      setProduct(result);
-      setLoading(false);
+
+      try {
+        // Fetch base product for complete taxonomy data
+        const baseResult = await getProductBySku(sku);
+        setBaseProduct(baseResult);
+
+        // Fetch variant data if a variant is selected, otherwise use base
+        if (variantCodeFromUrl && variantCodeFromUrl !== sku) {
+          const variantResult = await getProductBySku(variantCodeFromUrl);
+          setProduct(variantResult || baseResult);
+        } else {
+          setProduct(baseResult);
+        }
+      } catch (error) {
+        console.error("Failed to load product details:", error);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    loadProduct();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    loadProductData();
   }, [sku, variantCodeFromUrl]);
 
   // Sync selectedMedia once product data is loaded or changes
@@ -83,7 +89,7 @@ export default function ProductDetailPage() {
       thumbnailRefs.current[activeIndex]?.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
-        inline: "center", // Keeps the active thumbnail centered in the horizontal scroll container
+        inline: "center",
       });
     }
   }, [selectedMedia, product?.images]);
@@ -99,16 +105,13 @@ export default function ProductDetailPage() {
     checkScrollable();
     window.addEventListener("resize", checkScrollable);
     return () => window.removeEventListener("resize", checkScrollable);
-  }, [product?.images]); // ✅ Added optional chaining
+  }, [product?.images]);
 
-  // Keep local selectedVariantCode in sync whenever the URL param or the
-  // loaded product changes (e.g. back/forward navigation, direct link).
+  // Sync selectedVariantCode with URL changes
   useEffect(() => {
     setSelectedVariantCode(variantCodeFromUrl);
   }, [variantCodeFromUrl]);
 
-  // Updates the `variant` URL param and local state when the user picks a
-  // different variant option. Fully optional — only called from variant UI.
   const handleVariantSelect = (code: string) => {
     setSelectedVariantCode(code);
     setSearchParams((prev) => {
@@ -128,7 +131,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  // 2. Fallback UI if product is not found after loading finishes
+  // 2. Fallback UI if product is not found
   if (!product) {
     return (
       <div className="max-w-[1200px] mx-auto px-4 py-32 text-center">
@@ -149,6 +152,9 @@ export default function ProductDetailPage() {
     );
   }
 
+  // Use baseProduct taxonomy data as fallback if variant data lacks taxonomy
+  const taxonomyData = baseProduct || product;
+
   return (
     <div className="bg-white min-h-screen text-gray-900 antialiased font-sans">
       {/* Dynamic Meta Head Tags */}
@@ -165,7 +171,6 @@ export default function ProductDetailPage() {
           }
         />
 
-        {/* Open Graph / Social Media Tags */}
         <meta
           property="og:title"
           content={product?.meta_title || product?.product_name}
@@ -177,12 +182,11 @@ export default function ProductDetailPage() {
       </Helmet>
 
       <main className="max-w-[1200px] mx-auto px-4 py-8">
-        {/* <div>Hello world</div> */}
         <div className="mt-20">
           {sku === "0103152038" ? (
-            <AppTaxonomyV2 products={[product]} />
+            <AppTaxonomyV2 products={[taxonomyData]} />
           ) : (
-            <AppTaxonomy products={[product]} />
+            <AppTaxonomy products={[taxonomyData]} />
           )}
         </div>
 
@@ -215,7 +219,6 @@ export default function ProductDetailPage() {
 
             {/* Scrollable Thumbnails row with side navigation arrows */}
             <div className="relative flex items-center gap-2">
-              {/* Show Previous button ONLY if images > 1 AND it is actually scrollable */}
               {isScrollable && product.images?.length > 1 && (
                 <button
                   onClick={() => {
@@ -242,14 +245,12 @@ export default function ProductDetailPage() {
                     : "justify-start md:justify-center"
                 }`}
               >
-                {//@ts-ignore
-                product.images?.map((media, index) => {
+                {product.images?.map((media: string, index: number) => {
                   const isVideo =
                     media?.endsWith(".mp4") ||
                     media?.includes("/video/upload/");
                   const isSelected = selectedMedia === media;
 
-                  // Convert Cloudinary .mp4 link to a .jpg thumbnail frame dynamically
                   const videoThumbnailUrl = isVideo
                     ? media.replace(/\.[^/.]+$/, ".jpg")
                     : media;
@@ -266,14 +267,12 @@ export default function ProductDetailPage() {
                           : "border-gray-200 hover:border-gray-400"
                       }`}
                     >
-                      {/* Thumbnail Image (Works for both images and Cloudinary video poster frames) */}
                       <img
                         src={videoThumbnailUrl}
                         alt={`Thumbnail ${index}`}
                         className="w-full h-full object-contain"
                       />
 
-                      {/* Play Button Overlay for Videos */}
                       {isVideo && (
                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                           <div className="w-7 h-7 bg-black/60 rounded-full flex items-center justify-center">
@@ -292,7 +291,6 @@ export default function ProductDetailPage() {
                 })}
               </div>
 
-              {/* Show Next button ONLY if images > 1 AND it is actually scrollable */}
               {isScrollable && product.images?.length > 1 && (
                 <button
                   onClick={() => {
@@ -331,13 +329,11 @@ export default function ProductDetailPage() {
 
               return (
                 <div className="flex items-start text-[#1e1450] font-sans">
-                  {/* Currency Symbol and Whole Number */}
                   <span className="text-4xl font-extrabold leading-none tracking-tight">
                     {product.currency === "EUR" ? "€" : product.currency || "$"}
                     {integerPart}
                   </span>
 
-                  {/* Cents and 'incl VAT' stacked vertically next to the top */}
                   <div className="flex flex-col text-left leading-none ml-[1px] mt-[1px]">
                     <span className="text-base font-bold tracking-tight">
                       .{centsPart}
@@ -357,14 +353,10 @@ export default function ProductDetailPage() {
               </span>
             </div>
 
-            {/* Variant Selector — fully optional. Only renders when the
-                product has a `variants` object (e.g. { meterial: [...] }).
-                Each group renders as its own row of pill buttons; the
-                currently selected code (from the URL, or defaulted to the
-                first option) is highlighted. */}
-            {product.variants && Object.keys(product.variants).length > 0 && (
+            {/* Variant Selector — Uses baseProduct variants fallback if variant product response lacks variants */}
+            {(product.variants || baseProduct?.variants) && (
               <div className="space-y-3 pt-2">
-                {Object.entries(product.variants).map(
+                {Object.entries(product.variants || baseProduct.variants).map(
                   ([groupName, options]: [string, any]) => (
                     <div key={groupName}>
                       <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
@@ -374,7 +366,7 @@ export default function ProductDetailPage() {
                         {options?.map((variant: any) => {
                           const isActive = selectedVariantCode
                             ? selectedVariantCode === variant.code
-                            : variant.code === sku; // default highlight: base product's own sku, if it matches
+                            : variant.code === sku;
 
                           return (
                             <button
@@ -382,7 +374,7 @@ export default function ProductDetailPage() {
                               type="button"
                               onClick={() => handleVariantSelect(variant.code)}
                               title={variant.name}
-                              className={`px-3 py-1.5 rounded-sm border text-sm font-medium transition ${
+                              className={`px-3 py-1.5 w-20 cursor-pointer rounded-sm border text-sm font-medium transition ${
                                 isActive
                                   ? "border-orange-500 bg-orange-50 text-orange-700"
                                   : "border-gray-300 text-gray-700 hover:border-gray-400"
@@ -427,44 +419,36 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Bottom Section: Single Content Block */}
+        {/* Bottom Section: Content Block */}
         <div className="border border-gray-200 rounded-sm bg-white overflow-hidden">
-          {/* Fixed Design Header Tab */}
           <div className="border-b border-gray-200 bg-gray-50 px-4 pt-3">
             <span className="inline-block text-[#1F0C57] bg-white border-t-2 border-t-[#1e1450] border-x border-x-gray-200 border-b-white px-5 py-2.5 text-[16.5px] font-bold -mb-px">
               Product Description
             </span>
           </div>
 
-          {/* Sequential Display of Description, Tech Specs, & Documents */}
           <div className="p-6 md:p-8 space-y-2 text-gray-800 text-sm leading-relaxed">
-            {
-              //@ts-ignore
-              ["0103152038", "AWA06060", "3037"].includes(sku) && (
-                <>
-                  <div className="py-2">
-                    <div className="inline-block text-[#1F0C57] text-[25px] ">
-                      {product.product_sub_title || ""}
-                    </div>
+            {sku && ["0103152038", "AWA06060", "3037"].includes(sku) && (
+              <div className="py-2">
+                <div className="inline-block text-[#1F0C57] text-[25px]">
+                  {product.product_sub_title || ""}
+                </div>
 
-                    <div
-                      className="text-[#1F0C57] text-[25px]"
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          product.product_h3_title || product.product_name,
-                      }}
-                    />
+                <div
+                  className="text-[#1F0C57] text-[25px]"
+                  dangerouslySetInnerHTML={{
+                    __html: product.product_h3_title || product.product_name,
+                  }}
+                />
 
-                    <div className=" text-[#1F0C57] text-[25px]">
-                      Product Description
-                    </div>
-                  </div>
-                </>
-              )
-            }
+                <div className="text-[#1F0C57] text-[25px]">
+                  Product Description
+                </div>
+              </div>
+            )}
 
             {product.content && (
-              <div className="">
+              <div>
                 <div
                   className="[&_*]:[all:revert] text-[16px]"
                   dangerouslySetInnerHTML={{ __html: product.content }}
@@ -473,7 +457,7 @@ export default function ProductDetailPage() {
             )}
 
             {product.tech_spec && (
-              <div className="space-y-3  border-t border-gray-100">
+              <div className="space-y-3 border-t border-gray-100">
                 <h5
                   style={{
                     fontSize: "22.4px",
@@ -483,12 +467,9 @@ export default function ProductDetailPage() {
                 >
                   Technical Information:
                 </h5>
-                {
-                  //@ts-ignore
-                  ["0103152038", "AWA06060", "3037"].includes(sku) && (
-                    <h2 className="font-bold text-[16px]">Characteristics</h2>
-                  )
-                }
+                {sku && ["0103152038", "AWA06060", "3037"].includes(sku) && (
+                  <h2 className="font-bold text-[16px]">Characteristics</h2>
+                )}
                 <div
                   className="[&_*]:[all:revert] text-[16px] font-normal text-[rgb(51,51,51)]"
                   dangerouslySetInnerHTML={{ __html: product.tech_spec }}
@@ -516,7 +497,6 @@ export default function ProductDetailPage() {
                           doc: { name?: string; path: string } | string,
                           idx: number,
                         ) => {
-                          // Extract path/URL and custom name safely
                           const docUrl =
                             typeof doc === "string" ? doc : doc.path;
                           const documentLabel =
@@ -524,7 +504,6 @@ export default function ProductDetailPage() {
                               ? doc.name
                               : `Document ${idx + 1}`;
 
-                          // Helper function to force download across CORS/External domains
                           const handleDownload = async (
                             e: React.MouseEvent<HTMLAnchorElement>,
                           ) => {
@@ -536,7 +515,6 @@ export default function ProductDetailPage() {
                               const link = document.createElement("a");
                               link.href = url;
 
-                              // Get extension or fallback to pdf
                               const ext =
                                 docUrl.split(".").pop()?.split("?")[0] || "pdf";
                               link.download = `${documentLabel}.${ext}`;
@@ -546,7 +524,6 @@ export default function ProductDetailPage() {
                               document.body.removeChild(link);
                               window.URL.revokeObjectURL(url);
                             } catch (error) {
-                              // Fallback direct open if fetch is strictly blocked by CORS
                               window.open(docUrl, "_blank");
                             }
                           };
@@ -578,8 +555,7 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Footer Support Text */}
-            <p className="font-normal text-[rgb(51,51,51)]  text-[16px] pt-4 ">
+            <p className="font-normal text-[rgb(51,51,51)] text-[16px] pt-4">
               For further information regarding {product.brand || "product"}{" "}
               sales, please contact us.
             </p>

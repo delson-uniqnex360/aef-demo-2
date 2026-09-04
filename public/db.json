@@ -511,10 +511,10 @@
       "meta_keywords": "hex, head, set, screw, m10, 120mm, din, 933",
       "meta_description": "AEF Ltd stockist of Engineering Supplies and Consumables in Ireland. See our wide range of Tools in stock. Order today.",
       "status": "visible",
-      "price": "451.09",
+      "price": "0.04",
       "currency": "EUR",
       "variants": {
-        "meterial": [
+        "Material": [
           {
             "code": "93310120A2",
             "name": "93310120 Hex Head Set Screw M10 x 120mm Din 933 A2",
@@ -538,7 +538,7 @@
         ]
       },
       "images": [
-        "https://s3-eu-west-1.amazonaws.com/webshop/data/thumbs/c5/c569be36890e9ef5521152fd848a01c20b5b4af5.jpg"
+        "https://res.cloudinary.com/dh75n51on/image/upload/v1788534644/c569be36890e9ef5521152fd848a01c20b5b4af5_processed.jpg_1_c9qgzm.jpg"
       ],
       "documents": []
     },
