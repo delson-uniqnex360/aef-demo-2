@@ -34,7 +34,7 @@ export default function ProductDetailPage() {
 
   // Asynchronous product states
   const [product, setProduct] = useState<any>(null);
-  const [baseProduct, setBaseProduct] = useState<any>(null); // Preserves base taxonomy data
+  const [baseProduct, setBaseProduct] = useState<any>(null); // Preserves base full data response
   const [loading, setLoading] = useState(true);
   const [selectedMedia, setSelectedMedia] = useState("");
   const [isScrollable, setIsScrollable] = useState(false);
@@ -44,24 +44,60 @@ export default function ProductDetailPage() {
     string | undefined
   >(variantCodeFromUrl);
 
-  // Fetch product data: always fetch base product for taxonomy, plus variant data if specified
+  // Helper function to locate variant data inside the loaded base payload
+  const findVariantInPayload = (payload: any, variantCode?: string) => {
+    if (!payload) return null;
+    if (
+      !variantCode ||
+      variantCode === payload.sku ||
+      variantCode === payload.code
+    ) {
+      return payload;
+    }
+
+    // Check nested variant groups if available
+    if (payload.variants) {
+      for (const group of Object.values(payload.variants) as any[]) {
+        if (Array.isArray(group)) {
+          const matchedOption = group.find(
+            (opt: any) => opt.code === variantCode || opt.sku === variantCode,
+          );
+          if (matchedOption) {
+            // Merge option properties over base product so taxonomy/description are preserved
+            return {
+              ...payload,
+              ...matchedOption,
+              price: matchedOption.price ?? payload.price,
+              images: matchedOption.images?.length
+                ? matchedOption.images
+                : payload.images,
+              mpn: matchedOption.mpn ?? payload.mpn,
+              product_name:
+                matchedOption.name ??
+                matchedOption.product_name ??
+                payload.product_name,
+            };
+          }
+        }
+      }
+    }
+
+    return payload;
+  };
+
+  // 1. Fetch main product data once when SKU route param changes
   useEffect(() => {
-    async function loadProductData() {
+    async function loadInitialProductData() {
       if (!sku) return;
       setLoading(true);
 
       try {
-        // Fetch base product for complete taxonomy data
         const baseResult = await getProductBySku(sku);
         setBaseProduct(baseResult);
 
-        // Fetch variant data if a variant is selected, otherwise use base
-        if (variantCodeFromUrl && variantCodeFromUrl !== sku) {
-          const variantResult = await getProductBySku(variantCodeFromUrl);
-          setProduct(variantResult || baseResult);
-        } else {
-          setProduct(baseResult);
-        }
+        // Resolve active product instance based on current URL variant param
+        const activeData = findVariantInPayload(baseResult, variantCodeFromUrl);
+        setProduct(activeData);
       } catch (error) {
         console.error("Failed to load product details:", error);
       } finally {
@@ -69,10 +105,19 @@ export default function ProductDetailPage() {
       }
     }
 
-    loadProductData();
-  }, [sku, variantCodeFromUrl]);
+    loadInitialProductData();
+  }, [sku]);
 
-  // Sync selectedMedia once product data is loaded or changes
+  // 2. Client-side update when variant parameter changes without re-fetching API
+  useEffect(() => {
+    setSelectedVariantCode(variantCodeFromUrl);
+    if (baseProduct) {
+      const activeData = findVariantInPayload(baseProduct, variantCodeFromUrl);
+      setProduct(activeData);
+    }
+  }, [variantCodeFromUrl, baseProduct]);
+
+  // Sync selectedMedia once product data is loaded or active variant changes
   useEffect(() => {
     if (product?.images?.length > 0) {
       setSelectedMedia(product.images[0]);
@@ -107,21 +152,19 @@ export default function ProductDetailPage() {
     return () => window.removeEventListener("resize", checkScrollable);
   }, [product?.images]);
 
-  // Sync selectedVariantCode with URL changes
-  useEffect(() => {
-    setSelectedVariantCode(variantCodeFromUrl);
-  }, [variantCodeFromUrl]);
-
   const handleVariantSelect = (code: string) => {
     setSelectedVariantCode(code);
-    setSearchParams((prev) => {
-      const next = new URLSearchParams(prev);
-      next.set("variant", code);
-      return next;
-    });
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("variant", code);
+        return next;
+      },
+      { replace: true },
+    );
   };
 
-  // 1. Loading State UI
+  // Loading State UI
   if (loading) {
     return (
       <div className="max-w-[1200px] mx-auto py-20 text-center">
@@ -131,7 +174,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  // 2. Fallback UI if product is not found
+  // Fallback UI if product is not found
   if (!product) {
     return (
       <div className="max-w-[1200px] mx-auto px-4 py-32 text-center">
@@ -152,11 +195,11 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Use baseProduct taxonomy data as fallback if variant data lacks taxonomy
+  // Use baseProduct taxonomy data as fallback if variant instance lacks taxonomy
   const taxonomyData = baseProduct || product;
 
   return (
-    <div className="bg-white min-h-screen text-gray-900 antialiased font-sans">
+    <div className="bg-white min-h-screen text-gray-900 antialiased font-sans py-28">
       {/* Dynamic Meta Head Tags */}
       <Helmet>
         <title>
@@ -181,8 +224,8 @@ export default function ProductDetailPage() {
         )}
       </Helmet>
 
-      <main className="max-w-[1200px] mx-auto px-4 py-8">
-        <div className="mt-20">
+      <div className="max-w-[1200px] mx-auto px-4">
+        <div className="">
           {sku === "0103152038" ? (
             <AppTaxonomyV2 products={[taxonomyData]} />
           ) : (
@@ -561,7 +604,7 @@ export default function ProductDetailPage() {
             </p>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
