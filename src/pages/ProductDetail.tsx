@@ -177,7 +177,7 @@ export default function ProductDetailPage() {
   // Fallback UI if product is not found
   if (!product) {
     return (
-      <div className="max-w-[1200px] mx-auto px-4 py-32 text-center">
+      <div className="max-w-[1200px] mx-auto px-4 py-48 text-center">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
           Product Not Found
         </h2>
