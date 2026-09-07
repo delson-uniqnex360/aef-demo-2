@@ -432,7 +432,9 @@ export default function ProductDetailPage() {
                       <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
                         {groupName}
                       </p>
-                      <div className="flex flex-wrap gap-2">
+
+                      {/* Added overflow-x-auto, removed flex-wrap, added flex-shrink-0 to buttons */}
+                      <div className="flex overflow-x-auto gap-2 pb-1 scrollbar-none snap-x whitespace-nowrap">
                         {options?.map((variant: any) => {
                           const activeCode =
                             selectedVariantCode ||
@@ -447,7 +449,7 @@ export default function ProductDetailPage() {
                               type="button"
                               onClick={() => handleVariantSelect(variant.code)}
                               title={variant.name}
-                              className={`px-3 py-1.5 min-w-[5rem] cursor-pointer rounded-sm border text-sm font-medium transition ${
+                              className={`px-3 py-1.5 min-w-[5rem] flex-shrink-0 cursor-pointer rounded-sm border text-sm font-medium transition ${
                                 isActive
                                   ? "border-orange-500 bg-orange-50 text-orange-700 font-semibold"
                                   : "border-gray-300 text-gray-700 hover:border-gray-400"
@@ -501,24 +503,25 @@ export default function ProductDetailPage() {
           </div>
 
           <div className="p-6 md:p-8 space-y-2 text-gray-800 text-sm leading-relaxed">
-            {sku && ["0103152038", "AWA06060", "3037", "93310120"].includes(sku) && (
-              <div className="py-2">
-                <div className="inline-block text-[#1F0C57] text-[25px]">
-                  {product.product_sub_title || ""}
-                </div>
+            {sku &&
+              ["0103152038", "AWA06060", "3037", "93310120"].includes(sku) && (
+                <div className="py-2">
+                  <div className="inline-block text-[#1F0C57] text-[25px]">
+                    {product.product_sub_title || ""}
+                  </div>
 
-                <div
-                  className="text-[#1F0C57] text-[25px]"
-                  dangerouslySetInnerHTML={{
-                    __html: product.product_h3_title || product.product_name,
-                  }}
-                />
+                  <div
+                    className="text-[#1F0C57] text-[25px]"
+                    dangerouslySetInnerHTML={{
+                      __html: product.product_h3_title || product.product_name,
+                    }}
+                  />
 
-                <div className="text-[#1F0C57] text-[25px]">
-                  Product Description
+                  <div className="text-[#1F0C57] text-[25px]">
+                    Product Description
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {product.content && (
               <div>
@@ -540,9 +543,12 @@ export default function ProductDetailPage() {
                 >
                   Technical Information:
                 </h5>
-                {sku && ["0103152038", "AWA06060", "3037", "93310120"].includes(sku) && (
-                  <h2 className="font-bold text-[16px]">Characteristics</h2>
-                )}
+                {sku &&
+                  ["0103152038", "AWA06060", "3037", "93310120"].includes(
+                    sku,
+                  ) && (
+                    <h2 className="font-bold text-[16px]">Characteristics</h2>
+                  )}
                 <div
                   className="[&_*]:[all:revert] text-[16px] font-normal text-[rgb(51,51,51)]"
                   dangerouslySetInnerHTML={{ __html: product.tech_spec }}
