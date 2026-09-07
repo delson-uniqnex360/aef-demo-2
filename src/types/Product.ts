@@ -8,6 +8,7 @@ export type Variant = {
   code: string;
   name: string;
   option: string;
+  price: string;
 };
 
 export type Product = {
@@ -22,6 +23,8 @@ export type Product = {
   weight: string;
   weight_unit: string;
   currency: string;
+
+  price: string;
 
   images: string[];
   category_image?: string;
