@@ -518,22 +518,26 @@
           {
             "code": "93310120A2",
             "name": "93310120 Hex Head Set Screw M10 x 120mm Din 933 A2",
-            "option": "A2"
+            "option": "A2",
+            "price": "0.04"
           },
           {
             "code": "93310120A4",
             "name": "93310120 Hex Head Set Screw M10 x 120mm Din 933 A4",
-            "option": "A4"
+            "option": "A4",
+            "price": "0.05"
           },
           {
             "code": "93310120G",
             "name": "93310120 Hex Head Set Screw M10 x 120mm Din 933 Galv",
-            "option": "Galv"
+            "option": "Galv",
+            "price": "0.06"
           },
           {
             "code": "93310120Z",
             "name": "93310120 Hex Head Set Screw M10 x 120mm Din 933 Z/P",
-            "option": "Z/P"
+            "option": "Z/P",
+            "price": "0.03"
           }
         ]
       },

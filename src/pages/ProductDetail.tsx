@@ -47,6 +47,8 @@ export default function ProductDetailPage() {
   // Helper function to locate variant data inside the loaded base payload
   const findVariantInPayload = (payload: any, variantCode?: string) => {
     if (!payload) return null;
+
+    // If no variantCode provided, or it matches the root SKU/code, return base payload
     if (
       !variantCode ||
       variantCode === payload.sku ||
@@ -56,26 +58,28 @@ export default function ProductDetailPage() {
     }
 
     // Check nested variant groups if available
-    if (payload.variants) {
+    if (payload.variants && typeof payload.variants === "object") {
       for (const group of Object.values(payload.variants) as any[]) {
         if (Array.isArray(group)) {
           const matchedOption = group.find(
             (opt: any) => opt.code === variantCode || opt.sku === variantCode,
           );
           if (matchedOption) {
-            // Merge option properties over base product so taxonomy/description are preserved
+            // Merge option properties over base product
             return {
               ...payload,
               ...matchedOption,
+              // Force price override from variant option
               price: matchedOption.price ?? payload.price,
-              images: matchedOption.images?.length
-                ? matchedOption.images
-                : payload.images,
-              mpn: matchedOption.mpn ?? payload.mpn,
+              mpn: matchedOption.code ?? matchedOption.mpn ?? payload.mpn,
+              sku: matchedOption.code ?? matchedOption.sku ?? payload.sku,
               product_name:
                 matchedOption.name ??
                 matchedOption.product_name ??
                 payload.product_name,
+              images: matchedOption.images?.length
+                ? matchedOption.images
+                : payload.images,
             };
           }
         }
@@ -126,15 +130,36 @@ export default function ProductDetailPage() {
     }
   }, [product]);
 
+  // useEffect(() => {
+  //   if (!product?.images) return;
+
+  //   const activeIndex = product.images.indexOf(selectedMedia);
+  //   if (activeIndex !== -1 && thumbnailRefs.current[activeIndex]) {
+  //     thumbnailRefs.current[activeIndex]?.scrollIntoView({
+  //       behavior: "smooth",
+  //       block: "nearest",
+  //       inline: "center",
+  //     });
+  //   }
+  // }, [selectedMedia, product?.images]);
+
   useEffect(() => {
     if (!product?.images) return;
 
     const activeIndex = product.images.indexOf(selectedMedia);
-    if (activeIndex !== -1 && thumbnailRefs.current[activeIndex]) {
-      thumbnailRefs.current[activeIndex]?.scrollIntoView({
+    const activeThumbnail = thumbnailRefs.current[activeIndex];
+    const container = scrollContainerRef.current;
+
+    if (activeThumbnail && container) {
+      // Calculate the left position relative to the container
+      const thumbnailLeft = activeThumbnail.offsetLeft;
+      const thumbnailWidth = activeThumbnail.offsetWidth;
+      const containerWidth = container.clientWidth;
+
+      // Scroll horizontally only inside the thumbnail container
+      container.scrollTo({
+        left: thumbnailLeft - containerWidth / 2 + thumbnailWidth / 2,
         behavior: "smooth",
-        block: "nearest",
-        inline: "center",
       });
     }
   }, [selectedMedia, product?.images]);
@@ -197,6 +222,7 @@ export default function ProductDetailPage() {
 
   // Use baseProduct taxonomy data as fallback if variant instance lacks taxonomy
   const taxonomyData = baseProduct || product;
+  const availableVariants = product.variants || baseProduct?.variants;
 
   return (
     <div className="bg-white min-h-screen text-gray-900 antialiased font-sans py-28">
@@ -360,11 +386,12 @@ export default function ProductDetailPage() {
                 {product.product_name}
               </h1>
               <p className="text-sm text-[#1F0C57] flex items-center gap-1">
-                <span className="text-[#1F0C57]">└</span> {product.mpn}
+                <span className="text-[#1F0C57]">└</span>{" "}
+                {product.mpn || product.sku}
               </p>
             </div>
 
-            {/* Price block */}
+            {/* Price block - Dynamically updates with current product state */}
             {(() => {
               const priceNum = Number(product.price) || 0;
               const integerPart = Math.floor(priceNum);
@@ -396,10 +423,10 @@ export default function ProductDetailPage() {
               </span>
             </div>
 
-            {/* Variant Selector — Uses baseProduct variants fallback if variant product response lacks variants */}
-            {(product.variants || baseProduct?.variants) && (
+            {/* Variant Selector — Renders ONLY if variants object exists and is not empty */}
+            {availableVariants && Object.keys(availableVariants).length > 0 && (
               <div className="space-y-3 pt-2">
-                {Object.entries(product.variants || baseProduct.variants).map(
+                {Object.entries(availableVariants).map(
                   ([groupName, options]: [string, any]) => (
                     <div key={groupName}>
                       <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
@@ -407,9 +434,12 @@ export default function ProductDetailPage() {
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {options?.map((variant: any) => {
-                          const isActive = selectedVariantCode
-                            ? selectedVariantCode === variant.code
-                            : variant.code === sku;
+                          const activeCode =
+                            selectedVariantCode ||
+                            product.code ||
+                            product.sku ||
+                            sku;
+                          const isActive = activeCode === variant.code;
 
                           return (
                             <button
@@ -417,9 +447,9 @@ export default function ProductDetailPage() {
                               type="button"
                               onClick={() => handleVariantSelect(variant.code)}
                               title={variant.name}
-                              className={`px-3 py-1.5 w-20 cursor-pointer rounded-sm border text-sm font-medium transition ${
+                              className={`px-3 py-1.5 min-w-[5rem] cursor-pointer rounded-sm border text-sm font-medium transition ${
                                 isActive
-                                  ? "border-orange-500 bg-orange-50 text-orange-700"
+                                  ? "border-orange-500 bg-orange-50 text-orange-700 font-semibold"
                                   : "border-gray-300 text-gray-700 hover:border-gray-400"
                               }`}
                             >
