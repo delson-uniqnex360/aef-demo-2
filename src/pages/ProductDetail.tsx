@@ -43,7 +43,6 @@ export default function ProductDetailPage() {
     Record<string, string>
   >({});
 
-  // Helper to extract unique options per group from permutation arrays
   // Helper to extract strictly unique options per group based on visible text/value
   const getUniqueGroupOptions = (options: any[]) => {
     if (!Array.isArray(options)) return [];
@@ -134,6 +133,43 @@ export default function ProductDetailPage() {
         searchParams.forEach((value, key) => {
           initialSelections[key] = value;
         });
+
+        // If variants exist, select the first available option for any missing group
+        const variants = baseResult?.variants;
+        if (variants && Object.keys(variants).length > 0) {
+          Object.entries(variants).forEach(
+            ([groupName, rawOptions]: [string, any]) => {
+              if (!initialSelections[groupName]) {
+                const uniqueOptions = getUniqueGroupOptions(rawOptions);
+                if (uniqueOptions.length > 0) {
+                  const firstOpt = uniqueOptions[0];
+                  const displayLabel =
+                    firstOpt.option ||
+                    firstOpt.name ||
+                    firstOpt.value ||
+                    firstOpt.label ||
+                    firstOpt.code;
+                  const variantCode =
+                    firstOpt.code || firstOpt.sku || displayLabel;
+
+                  initialSelections[groupName] = variantCode;
+                }
+              }
+            },
+          );
+
+          // Reflect default variant selections back into the URL search params
+          setSearchParams(
+            (prev) => {
+              const next = new URLSearchParams(prev);
+              Object.entries(initialSelections).forEach(([key, val]) => {
+                next.set(key, val);
+              });
+              return next;
+            },
+            { replace: true },
+          );
+        }
 
         setSelectedVariants(initialSelections);
 
@@ -459,7 +495,6 @@ export default function ProductDetailPage() {
               </span>
             </div>
 
-            {/* Multi-Group Variant Selector using Original Flex-Wrap Design */}
             {/* Multi-Group Variant Selector */}
             {availableVariants && Object.keys(availableVariants).length > 0 && (
               <div className="space-y-3 pt-2">
