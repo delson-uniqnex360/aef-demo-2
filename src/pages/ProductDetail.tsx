@@ -49,10 +49,10 @@ export default function ProductDetailPage() {
     if (!Array.isArray(options)) return [];
 
     const seenValues = new Set<string>();
+    const uniqueItems: any[] = [];
 
-    return options.filter((item) => {
-      // Get the visible label or core identifier representing the option
-      const label = (
+    options.forEach((item) => {
+      const rawLabel = (
         item.option ||
         item.name ||
         item.value ||
@@ -64,12 +64,43 @@ export default function ProductDetailPage() {
         .toString()
         .trim();
 
-      if (!label || seenValues.has(label)) {
-        return false;
-      }
+      if (!rawLabel) return;
 
-      seenValues.add(label);
-      return true;
+      // Convert to lowercase to treat "Z/P", "z/p", and "Z/p" as duplicate entries
+      const normalizedKey = rawLabel.toLowerCase();
+
+      if (!seenValues.has(normalizedKey)) {
+        seenValues.add(normalizedKey);
+        uniqueItems.push(item);
+      }
+    });
+
+    // Natural alphanumeric sort (1 -> 9 -> A -> Z)
+    return uniqueItems.sort((a, b) => {
+      const labelA = (
+        a.option ||
+        a.name ||
+        a.value ||
+        a.label ||
+        a.code ||
+        a.sku ||
+        ""
+      ).toString();
+
+      const labelB = (
+        b.option ||
+        b.name ||
+        b.value ||
+        b.label ||
+        b.code ||
+        b.sku ||
+        ""
+      ).toString();
+
+      return labelA.localeCompare(labelB, undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
     });
   };
 
