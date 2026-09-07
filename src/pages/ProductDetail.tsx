@@ -170,11 +170,43 @@ export default function ProductDetailPage() {
         setBaseProduct(baseResult);
 
         const initialSelections: Record<string, string> = {};
+
+        // Load options from search params first
         searchParams.forEach((value, key) => {
           initialSelections[key] = value;
         });
 
+        // Automatically set the first option for any variant group if not specified in searchParams
+        if (baseResult?.variants) {
+          Object.entries(baseResult.variants).forEach(
+            ([groupName, rawOptions]: [string, any]) => {
+              if (!initialSelections[groupName]) {
+                const uniqueOpts = getUniqueGroupOptions(rawOptions);
+                if (uniqueOpts.length > 0) {
+                  const firstVal =
+                    uniqueOpts[0].option ||
+                    uniqueOpts[0].name ||
+                    uniqueOpts[0].value ||
+                    uniqueOpts[0].label ||
+                    uniqueOpts[0].code;
+
+                  if (firstVal) {
+                    initialSelections[groupName] = String(firstVal);
+                  }
+                }
+              }
+            },
+          );
+        }
+
         setSelectedVariants(initialSelections);
+
+        // Update URL search parameters to reflect default selections
+        const nextParams = new URLSearchParams();
+        Object.entries(initialSelections).forEach(([key, val]) => {
+          if (val) nextParams.set(key, val);
+        });
+        setSearchParams(nextParams, { replace: true });
 
         const updated = await getProductBySku(sku, initialSelections);
         setProduct(updated || baseResult);
