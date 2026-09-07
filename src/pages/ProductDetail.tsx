@@ -13,7 +13,6 @@ import {
 } from "react-icons/fa6";
 import { MdOutlineEmail, MdShare } from "react-icons/md";
 
-// Icon definition with exact background colors matching reference UI
 const shareIcons = [
   { icon: FaXTwitter, name: "X", bg: "bg-black text-white" },
   { icon: MdOutlineEmail, name: "Email", bg: "bg-gray-500 text-white" },
@@ -25,25 +24,21 @@ const shareIcons = [
 
 export default function ProductDetailPage() {
   const { sku } = useParams<{ sku: string }>();
-
   const [searchParams, setSearchParams] = useSearchParams();
 
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Asynchronous product states
   const [product, setProduct] = useState<any>(null);
   const [baseProduct, setBaseProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedMedia, setSelectedMedia] = useState("");
   const [isScrollable, setIsScrollable] = useState(false);
 
-  // Stores active selection for each variant group: { [groupName]: selectedCode }
   const [selectedVariants, setSelectedVariants] = useState<
     Record<string, string>
   >({});
 
-  // Helper to extract strictly unique options per group based on visible text/value
   const getUniqueGroupOptions = (options: any[]) => {
     if (!Array.isArray(options)) return [];
 
@@ -56,8 +51,6 @@ export default function ProductDetailPage() {
         item.name ||
         item.value ||
         item.label ||
-        item.code ||
-        item.sku ||
         ""
       )
         .toString()
@@ -65,7 +58,6 @@ export default function ProductDetailPage() {
 
       if (!rawLabel) return;
 
-      // Convert to lowercase to treat "Z/P", "z/p", and "Z/p" as duplicate entries
       const normalizedKey = rawLabel.toLowerCase();
 
       if (!seenValues.has(normalizedKey)) {
@@ -74,15 +66,12 @@ export default function ProductDetailPage() {
       }
     });
 
-    // Natural alphanumeric sort (1 -> 9 -> A -> Z)
     return uniqueItems.sort((a, b) => {
       const labelA = (
         a.option ||
         a.name ||
         a.value ||
         a.label ||
-        a.code ||
-        a.sku ||
         ""
       ).toString();
 
@@ -91,8 +80,6 @@ export default function ProductDetailPage() {
         b.name ||
         b.value ||
         b.label ||
-        b.code ||
-        b.sku ||
         ""
       ).toString();
 
@@ -103,22 +90,76 @@ export default function ProductDetailPage() {
     });
   };
 
-  // Helper to fetch product data with selected variant permutations from API
-  const fetchProductData = async (
-    targetSku: string,
-    variantSelections: Record<string, string>,
-  ) => {
-    try {
-      // Pass variant selection parameters directly to the API endpoint
-      const result = await getProductBySku(targetSku, variantSelections);
-      return result;
-    } catch (error) {
-      console.error("Failed to fetch product for variants:", error);
-      return null;
+  // Dynamic compatibility check: Ensures that selecting an option maintains a valid common item code across chosen variant groups
+  const isOptionAvailable = (groupName: string, optionValue: string) => {
+    const targetBase = baseProduct || product;
+    if (!targetBase?.variants) return true;
+
+    const groupMap = targetBase.variants as Record<string, any[]>;
+    const matrix = targetBase?.variant_matrix;
+
+    // Check variant matrix if present
+    if (Array.isArray(matrix) && matrix.length > 0) {
+      return matrix.some((item: Record<string, any>) => {
+        const itemOption = String(item[groupName] || "").toLowerCase();
+        if (itemOption !== String(optionValue).toLowerCase()) {
+          return false;
+        }
+
+        return Object.entries(selectedVariants).every(
+          ([otherGroup, otherCode]) => {
+            if (otherGroup === groupName || !otherCode) return true;
+            return (
+              String(item[otherGroup] || "").toLowerCase() ===
+              String(otherCode).toLowerCase()
+            );
+          },
+        );
+      });
     }
+
+    // Check grouped code linkage
+    const proposedSelections = {
+      ...selectedVariants,
+      [groupName]: optionValue,
+    };
+
+    const activeGroups = Object.keys(proposedSelections).filter((k) =>
+      Boolean(proposedSelections[k]),
+    );
+
+    if (activeGroups.length <= 1) return true;
+
+    // Collect matching codes for each group selection
+    const codesByGroup: Record<string, Set<string>> = {};
+
+    activeGroups.forEach((g) => {
+      codesByGroup[g] = new Set();
+      const val = String(proposedSelections[g]).toLowerCase();
+      const options = groupMap[g] || [];
+
+      options.forEach((opt: any) => {
+        const optVal = String(
+          opt.option || opt.name || opt.value || opt.label || "",
+        ).toLowerCase();
+        const optCode = String(opt.code || opt.sku || "").toLowerCase();
+
+        if (optVal === val || optCode === val) {
+          if (opt.code) codesByGroup[g].add(String(opt.code).toLowerCase());
+          if (opt.sku) codesByGroup[g].add(String(opt.sku).toLowerCase());
+        }
+      });
+    });
+
+    const firstGroup = activeGroups[0];
+    const candidateCodes = Array.from(codesByGroup[firstGroup] || []);
+
+    return candidateCodes.some((code) =>
+      activeGroups.every((g) => codesByGroup[g]?.has(code)),
+    );
   };
 
-  // 1. Initial product load
+  // Initial load
   useEffect(() => {
     async function loadInitialProductData() {
       if (!sku) return;
@@ -128,58 +169,15 @@ export default function ProductDetailPage() {
         const baseResult = await getProductBySku(sku);
         setBaseProduct(baseResult);
 
-        // Populate selected variants from URL query parameters
         const initialSelections: Record<string, string> = {};
         searchParams.forEach((value, key) => {
           initialSelections[key] = value;
         });
 
-        // If variants exist, select the first available option for any missing group
-        const variants = baseResult?.variants;
-        if (variants && Object.keys(variants).length > 0) {
-          Object.entries(variants).forEach(
-            ([groupName, rawOptions]: [string, any]) => {
-              if (!initialSelections[groupName]) {
-                const uniqueOptions = getUniqueGroupOptions(rawOptions);
-                if (uniqueOptions.length > 0) {
-                  const firstOpt = uniqueOptions[0];
-                  const displayLabel =
-                    firstOpt.option ||
-                    firstOpt.name ||
-                    firstOpt.value ||
-                    firstOpt.label ||
-                    firstOpt.code;
-                  const variantCode =
-                    firstOpt.code || firstOpt.sku || displayLabel;
-
-                  initialSelections[groupName] = variantCode;
-                }
-              }
-            },
-          );
-
-          // Reflect default variant selections back into the URL search params
-          setSearchParams(
-            (prev) => {
-              const next = new URLSearchParams(prev);
-              Object.entries(initialSelections).forEach(([key, val]) => {
-                next.set(key, val);
-              });
-              return next;
-            },
-            { replace: true },
-          );
-        }
-
         setSelectedVariants(initialSelections);
 
-        // Fetch display data if initial variant parameters exist
-        if (Object.keys(initialSelections).length > 0) {
-          const variantResult = await fetchProductData(sku, initialSelections);
-          setProduct(variantResult || baseResult);
-        } else {
-          setProduct(baseResult);
-        }
+        const updated = await getProductBySku(sku, initialSelections);
+        setProduct(updated || baseResult);
       } catch (error) {
         console.error("Failed to load product details:", error);
       } finally {
@@ -190,7 +188,6 @@ export default function ProductDetailPage() {
     loadInitialProductData();
   }, [sku]);
 
-  // Sync selectedMedia once product data is loaded or active variant changes
   useEffect(() => {
     if (product?.images?.length > 0) {
       setSelectedMedia(product.images[0]);
@@ -231,43 +228,31 @@ export default function ProductDetailPage() {
     return () => window.removeEventListener("resize", checkScrollable);
   }, [product?.images]);
 
-  // Handle toggling/selecting options across any combination of variants
-  const handleVariantSelect = async (groupName: string, code: string) => {
+  const handleVariantSelect = async (groupName: string, value: string) => {
     if (!sku) return;
 
     const nextSelections = { ...selectedVariants };
 
-    // Toggle selection: unselect if clicking the active option, or set new code
-    if (nextSelections[groupName] === code) {
+    if (nextSelections[groupName] === value) {
       delete nextSelections[groupName];
     } else {
-      nextSelections[groupName] = code;
+      nextSelections[groupName] = value;
     }
 
     setSelectedVariants(nextSelections);
 
-    // Update URL parameters dynamically to mirror active variant state
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        if (nextSelections[groupName]) {
-          next.set(groupName, code);
-        } else {
-          next.delete(groupName);
-        }
-        return next;
-      },
-      { replace: true },
-    );
+    const nextParams = new URLSearchParams();
+    Object.entries(nextSelections).forEach(([key, val]) => {
+      if (val) nextParams.set(key, val);
+    });
+    setSearchParams(nextParams, { replace: true });
 
-    // Call API with updated variant combination to fetch precise price and data
-    const updatedProduct = await fetchProductData(sku, nextSelections);
+    const updatedProduct = await getProductBySku(sku, nextSelections);
     if (updatedProduct) {
       setProduct(updatedProduct);
     }
   };
 
-  // Loading State UI
   if (loading) {
     return (
       <div className="max-w-[1200px] mx-auto py-20 text-center">
@@ -277,7 +262,6 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Fallback UI if product is not found
   if (!product) {
     return (
       <div className="max-w-[1200px] mx-auto px-4 py-48 text-center">
@@ -334,7 +318,6 @@ export default function ProductDetailPage() {
           )}
         </div>
 
-        {/* Top Section: Media Gallery and Product Details */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
           <div className="lg:col-span-6 space-y-4">
             <div className="relative border border-gray-200 rounded-sm overflow-hidden aspect-[4/3] flex items-center justify-center bg-white p-2">
@@ -360,7 +343,6 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* Thumbnails row */}
             <div className="relative flex items-center gap-2">
               {isScrollable && product.images?.length > 1 && (
                 <button
@@ -451,7 +433,6 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Right Column: Information & Actions */}
           <div className="lg:col-span-6 space-y-4">
             <div>
               <h1 className="text-[2.5em] font-normal text-[rgb(31,12,87)] tracking-tight leading-tight mb-1">
@@ -463,7 +444,6 @@ export default function ProductDetailPage() {
               </p>
             </div>
 
-            {/* Price block - Dynamically updating based on API response */}
             {(() => {
               const priceNum = Number(product.price) || 0;
               const integerPart = Math.floor(priceNum);
@@ -488,14 +468,12 @@ export default function ProductDetailPage() {
               );
             })()}
 
-            {/* Availability */}
             <div>
               <span className="text-xs font-semibold text-emerald-600 border border-emerald-500 px-2 py-0.5 rounded-sm bg-white inline-block">
                 In Stock
               </span>
             </div>
 
-            {/* Multi-Group Variant Selector */}
             {availableVariants && Object.keys(availableVariants).length > 0 && (
               <div className="space-y-3 pt-2">
                 {Object.entries(availableVariants).map(
@@ -517,23 +495,29 @@ export default function ProductDetailPage() {
                               variant.label ||
                               variant.code;
 
-                            const variantCode =
-                              variant.code || variant.sku || displayLabel;
+                            const optionValue = displayLabel;
                             const isActive =
-                              selectedVariants[groupName] === variantCode;
+                              selectedVariants[groupName] === optionValue;
+                            const isAvailable = isOptionAvailable(
+                              groupName,
+                              optionValue,
+                            );
 
                             return (
                               <button
-                                key={`${variantCode}-${idx}`}
+                                key={`${optionValue}-${idx}`}
                                 type="button"
+                                disabled={!isAvailable}
                                 onClick={() =>
-                                  handleVariantSelect(groupName, variantCode)
+                                  handleVariantSelect(groupName, optionValue)
                                 }
                                 title={displayLabel}
-                                className={`px-3 py-1.5 min-w-[5rem] cursor-pointer rounded-sm border text-sm font-medium transition ${
+                                className={`px-3 py-1.5 min-w-[5rem] rounded-sm border text-sm font-medium transition ${
                                   isActive
                                     ? "border-orange-500 bg-orange-50 text-orange-700 font-semibold"
-                                    : "border-gray-300 text-gray-700 hover:border-gray-400"
+                                    : isAvailable
+                                      ? "border-gray-300 text-gray-700 hover:border-gray-400 cursor-pointer"
+                                      : "border-gray-200 text-gray-300 bg-gray-50 cursor-not-allowed opacity-60"
                                 }`}
                               >
                                 {displayLabel}
@@ -547,7 +531,7 @@ export default function ProductDetailPage() {
                 )}
               </div>
             )}
-            {/* Quantity Input & Add to Cart */}
+
             <div className="flex gap-2 max-w-sm pt-2">
               <input
                 type="number"
@@ -560,7 +544,6 @@ export default function ProductDetailPage() {
               </button>
             </div>
 
-            {/* Social Share Icon Bar */}
             <div className="flex items-center gap-1.5 pt-4">
               {shareIcons.map(({ icon: Icon, name, bg }) => (
                 <button
@@ -575,7 +558,6 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Bottom Section: Content Block */}
         <div className="border border-gray-200 rounded-sm bg-white overflow-hidden">
           <div className="border-b border-gray-200 bg-gray-50 px-4 pt-3">
             <span className="inline-block text-[#1F0C57] bg-white border-t-2 border-t-[#1e1450] border-x border-x-gray-200 border-b-white px-5 py-2.5 text-[16.5px] font-bold -mb-px">
@@ -637,7 +619,6 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Documents Download Table */}
             {product.documents && product.documents.length > 0 && (
               <div className="space-y-3 pt-4 border-t border-gray-100 max-w-2xl">
                 <h5
