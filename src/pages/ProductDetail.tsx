@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { getProductBySku } from "../api/productDetail";
 import AppTaxonomy from "../components/AppTaxonomy";
 import AppTaxonomyV2 from "../components/AppTaxonomyv2";
+import MpnVariantDropdown from "../components/VarientComponent";
 
 import {
   FaXTwitter,
@@ -489,7 +490,7 @@ export default function ProductDetailPage() {
               </span>
             </div>
 
-            {availableVariants && Object.keys(availableVariants).length > 0 && (
+            {/* {availableVariants && Object.keys(availableVariants).length > 0 && (
               <div className="space-y-3 pt-2">
                 {Object.entries(availableVariants).map(
                   ([groupName, rawOptions]: [string, any]) => {
@@ -543,6 +544,89 @@ export default function ProductDetailPage() {
                       </div>
                     );
                   },
+                )}
+              </div>
+            )} */}
+
+            {availableVariants && Object.keys(availableVariants).length > 0 && (
+              <div className="space-y-3 pt-2">
+                {sku === "93310120-1" ? (
+                  // 93310120 → Put ALL variant dropdowns in one row
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {Object.entries(availableVariants).map(
+                      ([groupName, rawOptions]: [string, any]) => (
+                        <MpnVariantDropdown
+                          key={groupName}
+                          groupName={groupName}
+                          options={rawOptions}
+                          selectedValue={selectedVariants[groupName]}
+                          isOptionAvailable={(value) =>
+                            isOptionAvailable(groupName, value)
+                          }
+                          onSelect={(value) =>
+                            handleVariantSelect(groupName, value)
+                          }
+                        />
+                      ),
+                    )}
+                  </div>
+                ) : (
+                  // EXISTING UI FOR ALL OTHER PRODUCTS
+                  Object.entries(availableVariants).map(
+                    ([groupName, rawOptions]: [string, any]) => {
+                      const uniqueOptions = getUniqueGroupOptions(rawOptions);
+
+                      return (
+                        <div key={groupName}>
+                          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                            {groupName}
+                          </p>
+
+                          <div className="flex flex-wrap gap-2">
+                            {uniqueOptions.map((variant: any, idx: number) => {
+                              const displayLabel =
+                                variant.option ||
+                                variant.name ||
+                                variant.value ||
+                                variant.label ||
+                                variant.code;
+
+                              const optionValue = displayLabel;
+
+                              const isActive =
+                                selectedVariants[groupName] === optionValue;
+
+                              const isAvailable = isOptionAvailable(
+                                groupName,
+                                optionValue,
+                              );
+
+                              return (
+                                <button
+                                  key={`${optionValue}-${idx}`}
+                                  type="button"
+                                  disabled={!isAvailable}
+                                  onClick={() =>
+                                    handleVariantSelect(groupName, optionValue)
+                                  }
+                                  title={displayLabel}
+                                  className={`px-3 py-1.5 min-w-[5rem] rounded-sm border text-sm font-medium transition ${
+                                    isActive
+                                      ? "border-orange-500 bg-orange-50 text-orange-700 font-semibold"
+                                      : isAvailable
+                                        ? "border-gray-300 text-gray-700 hover:border-gray-400 cursor-pointer"
+                                        : "border-gray-200 text-gray-300 bg-gray-50 cursor-not-allowed opacity-60"
+                                  }`}
+                                >
+                                  {displayLabel}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    },
+                  )
                 )}
               </div>
             )}
