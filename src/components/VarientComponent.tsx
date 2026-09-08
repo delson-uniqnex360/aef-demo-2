@@ -41,29 +41,66 @@ export default function MpnVariantDropdown({
   }, []);
 
   const uniqueOptions = useMemo(() => {
-    const seen = new Set<string>();
+    if (!Array.isArray(options)) return [];
 
-    return options.filter((item) => {
-      const value = String(
+    const seenValues = new Set<string>();
+    const uniqueItems: any[] = [];
+
+    options.forEach((item) => {
+      const rawLabel = (
         item.option ??
-          item.name ??
-          item.value ??
-          item.label ??
-          item.code ??
-          item.sku ??
-          "",
-      ).trim();
+        item.name ??
+        item.value ??
+        item.label ??
+        item.code ??
+        item.sku ??
+        ""
+      )
+        .toString()
+        .trim();
 
-      if (!value) return false;
+      if (!rawLabel) return;
 
-      const key = value.toLowerCase();
+      // Hide unavailable options
+      if (isOptionAvailable && !isOptionAvailable(rawLabel)) {
+        return;
+      }
 
-      if (seen.has(key)) return false;
+      const normalizedKey = rawLabel.toLowerCase();
 
-      seen.add(key);
-      return true;
+      if (!seenValues.has(normalizedKey)) {
+        seenValues.add(normalizedKey);
+        uniqueItems.push(item);
+      }
     });
-  }, [options]);
+
+    return uniqueItems.sort((a, b) => {
+      const labelA = (
+        a.option ??
+        a.name ??
+        a.value ??
+        a.label ??
+        a.code ??
+        a.sku ??
+        ""
+      ).toString();
+
+      const labelB = (
+        b.option ??
+        b.name ??
+        b.value ??
+        b.label ??
+        b.code ??
+        b.sku ??
+        ""
+      ).toString();
+
+      return labelA.localeCompare(labelB, undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
+    });
+  }, [options, isOptionAvailable]);
 
   const filteredOptions = useMemo(() => {
     return uniqueOptions.filter((item) => {
