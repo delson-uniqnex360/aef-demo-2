@@ -666,7 +666,7 @@ export default function ProductDetailPage() {
 
           <div className="p-6 md:p-8 space-y-2 text-gray-800 text-sm leading-relaxed">
             {sku &&
-              ["0103152038", "AWA06060", "3037", "93310120"].includes(sku) && (
+              ["0103152038", "AWA06060", "3037", "93310120", "93310120-1"].includes(sku) && (
                 <div className="py-2">
                   <div className="inline-block text-[#1F0C57] text-[25px]">
                     {product.product_sub_title || ""}
@@ -706,7 +706,7 @@ export default function ProductDetailPage() {
                   Technical Information:
                 </h5>
                 {sku &&
-                  ["0103152038", "AWA06060", "3037", "93310120"].includes(
+                  ["0103152038", "AWA06060", "3037", "93310120", "93310120-1"].includes(
                     sku,
                   ) && (
                     <h2 className="font-bold text-[16px]">Characteristics</h2>
