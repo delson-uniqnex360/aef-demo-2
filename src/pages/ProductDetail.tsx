@@ -90,8 +90,6 @@ export default function ProductDetailPage() {
     });
   };
 
-
-  // Dynamic compatibility check: Ensures that selecting an option maintains a valid common item code across chosen variant groups
   const isOptionAvailable = (groupName: string, optionValue: string) => {
     const targetBase = baseProduct || product;
     if (!targetBase?.variants) return true;
@@ -99,7 +97,6 @@ export default function ProductDetailPage() {
     const groupMap = targetBase.variants as Record<string, any[]>;
     const matrix = targetBase?.variant_matrix;
 
-    // Check variant matrix if present
     if (Array.isArray(matrix) && matrix.length > 0) {
       return matrix.some((item: Record<string, any>) => {
         const itemOption = String(item[groupName] || "").toLowerCase();
@@ -119,7 +116,6 @@ export default function ProductDetailPage() {
       });
     }
 
-    // Check grouped code linkage
     const proposedSelections = {
       ...selectedVariants,
       [groupName]: optionValue,
@@ -131,7 +127,6 @@ export default function ProductDetailPage() {
 
     if (activeGroups.length <= 1) return true;
 
-    // Collect matching codes for each group selection
     const codesByGroup: Record<string, Set<string>> = {};
 
     activeGroups.forEach((g) => {
@@ -160,7 +155,6 @@ export default function ProductDetailPage() {
     );
   };
 
-  // Initial load
   useEffect(() => {
     async function loadInitialProductData() {
       if (!sku) return;
@@ -172,37 +166,12 @@ export default function ProductDetailPage() {
 
         const initialSelections: Record<string, string> = {};
 
-        // Load options from search params first
         searchParams.forEach((value, key) => {
           initialSelections[key] = value;
         });
 
-        // Automatically set the first option for any variant group if not specified in searchParams
-        if (baseResult?.variants) {
-          Object.entries(baseResult.variants).forEach(
-            ([groupName, rawOptions]: [string, any]) => {
-              if (!initialSelections[groupName]) {
-                const uniqueOpts = getUniqueGroupOptions(rawOptions);
-                if (uniqueOpts.length > 0) {
-                  const firstVal =
-                    uniqueOpts[0].option ||
-                    uniqueOpts[0].name ||
-                    uniqueOpts[0].value ||
-                    uniqueOpts[0].label ||
-                    uniqueOpts[0].code;
-
-                  if (firstVal) {
-                    initialSelections[groupName] = String(firstVal);
-                  }
-                }
-              }
-            },
-          );
-        }
-
         setSelectedVariants(initialSelections);
 
-        // Update URL search parameters to reflect default selections
         const nextParams = new URLSearchParams();
         Object.entries(initialSelections).forEach(([key, val]) => {
           if (val) nextParams.set(key, val);
@@ -317,6 +286,18 @@ export default function ProductDetailPage() {
 
   const taxonomyData = baseProduct || product;
   const availableVariants = baseProduct?.variants || product?.variants;
+
+  const variantGroups = availableVariants ? Object.keys(availableVariants) : [];
+  const hasSelectedAllVariants =
+    variantGroups.length === 0 ||
+    variantGroups.every((group) => Boolean(selectedVariants[group]));
+
+  const displaySku =
+    variantGroups.length > 0
+      ? hasSelectedAllVariants
+        ? product.sku
+        : ""
+      : product.sku;
 
   return (
     <div className="bg-white min-h-screen text-gray-900 antialiased font-sans py-28">
@@ -471,10 +452,11 @@ export default function ProductDetailPage() {
               <h1 className="text-[2.5em] font-normal text-[rgb(31,12,87)] tracking-tight leading-tight mb-1">
                 {product.product_name}
               </h1>
-              <p className="text-sm text-[#1F0C57] flex items-center gap-1">
-                <span className="text-[#1F0C57]">└</span>{" "}
-                { product.sku}
-              </p>
+              {displaySku && (
+                <p className="text-sm text-[#1F0C57] flex items-center gap-1">
+                  <span className="text-[#1F0C57]">└</span> {displaySku}
+                </p>
+              )}
             </div>
 
             {(() => {
