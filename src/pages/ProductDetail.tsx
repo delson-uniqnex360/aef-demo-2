@@ -90,59 +90,6 @@ export default function ProductDetailPage() {
     });
   };
 
-  // Helper function to resolve the active variant's MPN / SKU
-  const getActiveMpnOrSku = () => {
-    const targetBase = baseProduct || product;
-
-    // 1. Check variant_matrix for a matching record
-    if (
-      Array.isArray(targetBase?.variant_matrix) &&
-      targetBase.variant_matrix.length > 0
-    ) {
-      const matchingMatrixItem = targetBase.variant_matrix.find(
-        (item: Record<string, any>) => {
-          return Object.entries(selectedVariants).every(
-            ([group, selectedVal]) => {
-              if (!selectedVal) return true;
-              return (
-                String(item[group] || "").toLowerCase() ===
-                String(selectedVal).toLowerCase()
-              );
-            },
-          );
-        },
-      );
-
-      if (matchingMatrixItem) {
-        return (
-          matchingMatrixItem.mpn ||
-          matchingMatrixItem.sku ||
-          matchingMatrixItem.code
-        );
-      }
-    }
-
-    // 2. Check individual variant options across all selected groups
-    if (targetBase?.variants) {
-      for (const [groupName, selectedVal] of Object.entries(selectedVariants)) {
-        if (!selectedVal) continue;
-        const options = targetBase.variants[groupName] || [];
-        const match = options.find((opt: any) => {
-          const val = (opt.option || opt.name || opt.value || opt.label || "")
-            .toString()
-            .toLowerCase();
-          return val === String(selectedVal).toLowerCase();
-        });
-
-        if (match && (match.mpn || match.sku || match.code)) {
-          return match.mpn || match.sku || match.code;
-        }
-      }
-    }
-
-    // 3. Fallback to API product response or default SKU parameter
-    return product?.mpn || product?.sku || sku;
-  };
 
   // Dynamic compatibility check: Ensures that selecting an option maintains a valid common item code across chosen variant groups
   const isOptionAvailable = (groupName: string, optionValue: string) => {
@@ -524,12 +471,9 @@ export default function ProductDetailPage() {
               <h1 className="text-[2.5em] font-normal text-[rgb(31,12,87)] tracking-tight leading-tight mb-1">
                 {product.product_name}
               </h1>
-              {/* <p className="text-sm text-[#1F0C57] flex items-center gap-1">
-                <span className="text-[#1F0C57]">└</span>{" "}
-                {product.mpn || product.sku}
-              </p> */}
               <p className="text-sm text-[#1F0C57] flex items-center gap-1">
-                <span className="text-[#1F0C57]">└</span> {getActiveMpnOrSku()}
+                <span className="text-[#1F0C57]">└</span>{" "}
+                { product.sku}
               </p>
             </div>
 
