@@ -163,7 +163,7 @@ export default function MpnVariantDropdown({
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full max-w-sm bg-white border border-gray-300 rounded-sm shadow-lg">
+        <div className="absolute z-2 mt-1 w-full max-w-sm bg-white border border-gray-300 rounded-sm shadow-lg">
           <div className="p-2 border-b border-gray-200">
             <input
               type="text"
